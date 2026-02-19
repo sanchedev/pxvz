@@ -11,7 +11,7 @@ export class Event<T extends any[]> {
     this.#list.splice(index, 1)
   }
 
-  emit(params: T) {
+  emit(...params: T) {
     this.#list.forEach((cb) => cb(...params))
   }
 
