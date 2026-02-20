@@ -1,14 +1,12 @@
-class GameConfig {
-  constructor(
-    public readonly canvas: HTMLCanvasElement,
-    public readonly ctx: CanvasRenderingContext2D,
-    public readonly width: number,
-    public readonly height: number,
-  ) {}
-}
+import { Vector2 } from './classes/vector2.js'
 
-const gc: { current: GameConfig | null } = {
-  current: null,
+export class GameConfig {
+  static canvas: HTMLCanvasElement
+  static ctx: CanvasRenderingContext2D
+  static width: number
+  static height: number
+
+  static translate = Vector2.ZERO
 }
 
 interface GCO {
@@ -19,13 +17,8 @@ interface GCO {
 }
 
 export function _set_gc({ canvas, ctx, width, height }: GCO) {
-  gc.current = new GameConfig(canvas, ctx, width, height)
-}
-
-export function getGameConfig() {
-  if (gc.current == null) {
-    throw new Error('The game has not been set.')
-  }
-
-  return gc.current
+  GameConfig.canvas = canvas
+  GameConfig.ctx = ctx
+  GameConfig.width = width
+  GameConfig.height = height
 }
