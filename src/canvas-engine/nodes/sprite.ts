@@ -27,6 +27,8 @@ export class Sprite extends Node {
   constructor(options: SpriteOptions) {
     super(options)
 
+    this.id = options.id ?? this.nodeName
+
     this.#textureId = options.textureId
     this.texture = getTexture(options.textureId)
     this.margin = options.margin
