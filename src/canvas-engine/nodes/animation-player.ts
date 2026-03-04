@@ -23,6 +23,7 @@ export class AnimationPlayer extends Node {
   // Events
   animationChanged = new Event<[newAnim: string, oldAnim: string | null]>()
   animationStopped = new Event<[anim: string]>()
+  animationIndexChanged = new Event<[index: number]>()
   animationEnded = new Event<[anim: string]>()
 
   add(animName: string, animation: Animation) {
@@ -35,6 +36,7 @@ export class AnimationPlayer extends Node {
     if (this.#currentAnim != null) this.stop()
     this.#index = index ?? 0
     this.#currentAnim = animName
+    this.animationIndexChanged.emit(index ?? 0)
   }
 
   stop() {
@@ -60,7 +62,8 @@ export class AnimationPlayer extends Node {
         return
       }
 
-      this.#index -= anim.keyframes.length
+      this.animationIndexChanged.emit(0)
+      this.#index = 0
     }
 
     const i = Math.floor(this.#index)
@@ -72,6 +75,10 @@ export class AnimationPlayer extends Node {
     kf(this.#index / anim.fps)
 
     this.#index += delta * anim.fps
+
+    if (this.#index < anim.keyframes.length && i !== Math.floor(this.#index)) {
+      this.animationIndexChanged.emit(Math.floor(this.#index))
+    }
   }
 
   update(delta: number): void {
