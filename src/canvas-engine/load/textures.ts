@@ -18,7 +18,7 @@ export async function loadTexture(id: string, url: string): Promise<void> {
       reject(err)
     }
 
-    image.addEventListener('loadedmetadata', onLoaded)
+    image.addEventListener('load', onLoaded)
     image.addEventListener('error', onError)
 
     image.src = url

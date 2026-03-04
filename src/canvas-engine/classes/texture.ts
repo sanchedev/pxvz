@@ -24,8 +24,8 @@ export class Texture {
 
 interface TextureDrawOptions {
   position: Vector2
-  size?: Vector2
-  margin?: Vector2
+  size?: Vector2 | undefined
+  margin?: Vector2 | undefined
 }
 
 export const textures = new Map<string, Texture>()
