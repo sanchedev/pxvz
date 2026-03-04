@@ -47,6 +47,8 @@ export class Game {
     options.canvas.height = h
     options.ctx.scale(r, r)
 
+    options.ctx.imageSmoothingEnabled = false
+
     this.sceneManager.setScene(null)
   }
 
