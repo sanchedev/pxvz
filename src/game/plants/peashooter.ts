@@ -1,6 +1,5 @@
-import { useNode } from '../../canvas-engine/lib/node.js'
 import { loadTexture } from '../../canvas-engine/load/textures.js'
-import { Sprite } from '../../canvas-engine/nodes/index.js'
+import { Sprite, useNode } from '../../canvas-engine/nodes/index.js'
 
 await loadTexture(
   'peashooter.idle',
