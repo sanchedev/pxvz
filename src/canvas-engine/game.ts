@@ -36,6 +36,12 @@ export class Game {
       height: options.canvas.height,
     })
 
+    options.canvas.style.setProperty('--width', options.canvas.width.toString())
+    options.canvas.style.setProperty(
+      '--height',
+      options.canvas.height.toString(),
+    )
+
     const { width: w, height: h, ratio: r } = getDPRFromCtx(options.ctx)
     options.canvas.width = w
     options.canvas.height = h
