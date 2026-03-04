@@ -88,6 +88,10 @@ export class Game {
 
     if (node == null) return
 
+    if (!node.isStarted) {
+      node.start()
+    }
+
     node.update(delta)
     node.draw(delta)
   }

@@ -85,6 +85,7 @@ export class Node {
 
   // Events
   zIndexChanged = new Event<[zIndex: number]>()
+  started = new Event<[]>()
   drawed = new Event<[delta: number]>()
   updated = new Event<[delta: number]>()
   destroyed = new Event<[]>()
@@ -102,6 +103,7 @@ export class Node {
     for (const node of this.children) {
       node.start()
     }
+    this.started.emit()
   }
   update(delta: number): void {
     this.updated.emit(delta)
