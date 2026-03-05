@@ -3,7 +3,7 @@ import type { Vector2 } from '../math/vector2.js'
 import { Node, type NodeOptions } from './node.js'
 
 export interface SpriteOptions extends NodeOptions {
-  textureId: string
+  textureId?: string
   margin?: Vector2
   size?: Vector2
 }
@@ -11,8 +11,8 @@ export interface SpriteOptions extends NodeOptions {
 export class Sprite extends Node {
   nodeName = 'sprite'
 
-  #textureId: string
-  #texture: Texture
+  #textureId?: string | undefined
+  #texture?: Texture | undefined
   margin?: Vector2 | undefined
   size?: Vector2 | undefined
 
@@ -21,9 +21,16 @@ export class Sprite extends Node {
   }
   set textureId(value) {
     if (this.textureId === value) return
+    if (value == null) {
+      this.#textureId = undefined
+      this.#texture = undefined
+      return
+    }
 
     this.#textureId = value
-    this.#texture = getTexture(value)
+    if (this.isStarted) {
+      this.#texture = getTexture(value)
+    }
   }
 
   getTexture() {
@@ -35,19 +42,29 @@ export class Sprite extends Node {
 
     this.id = options.id ?? this.nodeName
 
-    this.#textureId = options.textureId
-    this.#texture = getTexture(options.textureId)
     this.margin = options.margin
     this.size = options.size
+    this.textureId = options.textureId
   }
 
-  draw(delta: number): void {
+  start(): void {
+    if (this.textureId) {
+      this.#texture = getTexture(this.textureId)
+    }
+    super.start()
+  }
+
+  #drawTexture() {
+    if (this.#texture == null) return
     this.#texture.draw({
       position: this.position,
       margin: this.margin,
       size: this.size,
     })
+  }
 
+  draw(delta: number): void {
+    this.#drawTexture()
     super.draw(delta)
   }
 }
