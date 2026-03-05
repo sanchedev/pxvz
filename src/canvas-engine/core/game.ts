@@ -96,9 +96,9 @@ export class Game {
   static loop(delta: number) {
     const node = this.sceneManager.currentNode
 
-    GameConfig.ctx.clearRect(0, 0, GameConfig.width, GameConfig.height)
-
     if (node == null) return
+
+    GameConfig.ctx.clearRect(0, 0, GameConfig.width, GameConfig.height)
 
     if (!node.isStarted) {
       node.start()

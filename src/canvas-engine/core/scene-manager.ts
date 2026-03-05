@@ -12,18 +12,33 @@ export class SceneManager {
     this.#scenes.set(name, scene)
   }
 
-  setScene(scene: string | null) {
+  async preloadScene(scene: string) {
+    if (!this.#scenes.has(scene))
+      throw new Error(`Scene ${scene}does not exist.`)
+
+    const node = await this.#scenes.get(scene)!.load()
+
+    const setScene = () => {
+      this.#currentScene = scene
+      this.#currentNode = node
+    }
+
+    return setScene
+  }
+
+  async setScene(scene: string | null) {
     this.#currentNode?.destroy()
 
-    if (scene == null) {
-      this.#currentScene = null
-      this.#currentNode = null
-      return
-    }
-    if (!this.#scenes.has(scene)) return
+    this.#currentScene = null
+    this.#currentNode = null
+
+    if (scene == null) return
+
+    if (!this.#scenes.has(scene))
+      throw new Error(`Scene ${scene}does not exist.`)
 
     this.#currentScene = scene
-    this.#currentNode = this.#scenes.get(scene)!.render()
+    this.#currentNode = await this.#scenes.get(scene)!.load()
   }
 
   get currentScene() {
