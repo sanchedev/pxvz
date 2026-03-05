@@ -1,0 +1,36 @@
+import { Vector2 } from '../../classes/vector2.js'
+import { GameConfig } from '../../game-config.js'
+import { Node, type NodeOptions } from '../node.js'
+
+export interface ViewOptions extends NodeOptions {
+  backgroundColor?: string
+  size: Vector2
+}
+
+export class View extends Node {
+  nodeName = 'view'
+
+  backgroundColor: string
+  size: Vector2
+
+  constructor(options: ViewOptions) {
+    super(options)
+
+    this.id = options.id ?? this.nodeName
+
+    this.backgroundColor = options.backgroundColor ?? '#FFFFFF'
+    this.size = options.size
+  }
+
+  draw(delta: number): void {
+    GameConfig.ctx.fillStyle = this.backgroundColor
+    GameConfig.ctx.fillRect(
+      this.position.x,
+      this.position.y,
+      this.size.x,
+      this.size.y,
+    )
+
+    super.draw(delta)
+  }
+}
