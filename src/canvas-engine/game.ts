@@ -1,4 +1,5 @@
 import { SceneManager } from './classes/scene-manager.js'
+import { Theme } from './classes/theme.js'
 import { _set_gc, GameConfig } from './game-config.js'
 import { getDPRFromCtx } from './lib/dpr.js'
 import { Event } from './lib/event.js'
@@ -7,6 +8,7 @@ interface SetupOptions {
   width: number
   height: number
   root: HTMLElement
+  theme?: Theme
 }
 
 let isPaused = false
@@ -43,6 +45,7 @@ export class Game {
       ctx: ctx,
       width: options.width,
       height: options.height,
+      theme: options.theme ?? new Theme(),
     })
 
     canvas.width = options.width

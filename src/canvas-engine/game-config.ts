@@ -1,3 +1,4 @@
+import type { Theme } from './classes/theme.js'
 import { Vector2 } from './classes/vector2.js'
 
 export class GameConfig {
@@ -5,6 +6,8 @@ export class GameConfig {
   static ctx: CanvasRenderingContext2D
   static width: number
   static height: number
+
+  static theme: Theme
 
   static translate = Vector2.ZERO
 }
@@ -14,11 +17,13 @@ interface GCO {
   ctx: CanvasRenderingContext2D
   width: number
   height: number
+  theme: Theme
 }
 
-export function _set_gc({ canvas, ctx, width, height }: GCO) {
+export function _set_gc({ canvas, ctx, width, height, theme }: GCO) {
   GameConfig.canvas = canvas
   GameConfig.ctx = ctx
   GameConfig.width = width
   GameConfig.height = height
+  GameConfig.theme = theme
 }
