@@ -4,7 +4,7 @@ import {
   Sprite,
   addStart,
   AnimationPlayer,
-  kfSpriteSheet,
+  kfFromSpriteSheet,
   Vector2,
   Node,
 } from '../../canvas-engine/index.js'
@@ -30,12 +30,12 @@ export function Peashooter() {
     animPlayer
       .add('idle', {
         fps: 4,
-        keyframes: kfSpriteSheet(node, 'peashooter.idle', 4),
+        keyframes: kfFromSpriteSheet(node, 'peashooter.idle', 4),
         loop: false,
       })
       .add('shoot', {
         fps: 4,
-        keyframes: kfSpriteSheet(node, 'peashooter.shoot', 4),
+        keyframes: kfFromSpriteSheet(node, 'peashooter.shoot', 4),
         loop: false,
       })
 
