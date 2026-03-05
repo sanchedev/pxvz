@@ -7,23 +7,28 @@ import {
   kfFromSpriteSheet,
   Vector2,
   Node,
+  useLoad,
 } from '../../canvas-engine/index.js'
 
 import { Pea } from '../projectiles/pea.js'
 
-await loadTexture(
-  'peashooter.idle',
-  'assets/sprites/plants/peashooter/idle.png',
-)
-await loadTexture(
-  'peashooter.shoot',
-  'assets/sprites/plants/peashooter/shoot.png',
-)
+function load() {
+  console.log('load')
+  return [
+    loadTexture('peashooter.idle', 'assets/sprites/plants/peashooter/idle.png'),
+    loadTexture(
+      'peashooter.shoot',
+      'assets/sprites/plants/peashooter/shoot.png',
+    ),
+  ]
+}
 
 export function Peashooter() {
+  useLoad(load)
   const add = useAdd<Sprite>()
 
   addStart((node) => {
+    console.log('start')
     const animPlayer = node.getChild<AnimationPlayer>('animation-player')
     const peaContainer = node.getChild<Node>('pea-container')
 

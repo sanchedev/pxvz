@@ -4,15 +4,24 @@ import {
   addUpdate,
   useAdd,
   Sprite,
+  addStart,
+  useLoad,
 } from '../../canvas-engine/index.js'
 
-await loadTexture('pea', 'assets/sprites/projectiles/pea.png')
+function load() {
+  return [loadTexture('pea', 'assets/sprites/projectiles/pea.png')]
+}
 
 const PEA_SPEED = 40
 
 export function Pea() {
+  useLoad(load)
+
   const add = useAdd<Sprite>()
 
+  addStart((node) => {
+    console.log(node)
+  }, add.adds)
   addUpdate((node, delta) => {
     if (node.globalPosition.x <= GameConfig.width) {
       node.position.x += delta * PEA_SPEED
