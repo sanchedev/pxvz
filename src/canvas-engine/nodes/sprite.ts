@@ -26,6 +26,10 @@ export class Sprite extends Node {
     this.#texture = getTexture(value)
   }
 
+  getTexture() {
+    return this.#texture
+  }
+
   constructor(options: SpriteOptions) {
     super(options)
 

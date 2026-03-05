@@ -87,24 +87,10 @@ export class AnimationPlayer extends Node {
   }
 }
 
-interface Animation {
+export interface Animation {
   fps: number
   keyframes: AnimationKeyframe[]
   loop?: boolean | undefined
 }
 
-type AnimationKeyframe = (time: number) => void
-
-export function kfFromProp<T extends Node, K extends keyof T>(
-  node: T,
-  property: K,
-  value: T[K],
-): AnimationKeyframe {
-  return () => {
-    node[property] = value
-  }
-}
-
-export function multiKF(kfs: AnimationKeyframe[]): AnimationKeyframe {
-  return (time) => kfs.forEach((kf) => kf(time))
-}
+export type AnimationKeyframe = (time: number) => void
