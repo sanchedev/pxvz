@@ -1,4 +1,4 @@
-import type { Node } from '../nodes/node.js'
+import type { Node } from '../../nodes/node.js'
 
 export type Add<T extends Node> = (node: T) => void
 

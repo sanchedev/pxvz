@@ -1,4 +1,4 @@
-export * from './adds/index.js'
+export * from './hooks/index.js'
 export * from './animation/index.js'
 export * from './assets/index.js'
 export * from './core/index.js'

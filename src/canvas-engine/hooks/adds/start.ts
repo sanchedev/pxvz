@@ -1,4 +1,4 @@
-import type { Node } from '../nodes/node.js'
+import type { Node } from '../../nodes/node.js'
 import type { Add } from './add.js'
 import { type NodEv } from './utils.js'
 
