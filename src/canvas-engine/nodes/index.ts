@@ -1,5 +1,8 @@
-export { Node } from './node.js'
-export { Sprite } from './sprite.js'
-export { AnimationPlayer } from './animation-player.js'
+export { Node, type NodeOptions } from './node.js'
+export { Sprite, type SpriteOptions } from './sprite.js'
+export {
+  AnimationPlayer,
+  type AnimationPlayerOptions,
+} from './animation-player.js'
 
-export { useNode } from '../lib/node.js'
+export * from './ui/index.js'

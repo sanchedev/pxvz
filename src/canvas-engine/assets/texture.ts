@@ -1,5 +1,5 @@
-import { GameConfig } from '../game-config.js'
-import type { Vector2 } from './vector2.js'
+import { GameConfig } from '../core/game-config.js'
+import type { Vector2 } from '../math/vector2.js'
 
 export class Texture {
   width: number

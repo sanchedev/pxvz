@@ -1,12 +1,14 @@
-import { Vector2 } from '../../canvas-engine/index.js'
-import { useAdd, addStart } from '../../canvas-engine/lib/adds/index.js'
-import { kfSpriteSheet } from '../../canvas-engine/lib/animation.js'
-import { loadTexture } from '../../canvas-engine/load/textures.js'
 import {
-  AnimationPlayer,
-  Node,
+  loadTexture,
+  useAdd,
   Sprite,
-} from '../../canvas-engine/nodes/index.js'
+  addStart,
+  AnimationPlayer,
+  kfSpriteSheet,
+  Vector2,
+  Node,
+} from '../../canvas-engine/index.js'
+
 import { Pea } from '../projectiles/pea.js'
 
 await loadTexture(

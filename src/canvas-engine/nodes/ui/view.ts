@@ -1,5 +1,5 @@
-import { Vector2 } from '../../classes/vector2.js'
-import { GameConfig } from '../../game-config.js'
+import { Vector2 } from '../../math/vector2.js'
+import { GameConfig } from '../../core/game-config.js'
 import { Node, type NodeOptions } from '../node.js'
 
 export interface ViewOptions extends NodeOptions {

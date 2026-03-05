@@ -27,6 +27,7 @@
     // "noUnusedParameters": true,
     // "noFallthroughCasesInSwitch": true,
     // "noPropertyAccessFromIndexSignature": true,
+    "allowImportingTsExtensions": false,
     // Recommended Options
     "strict": true,
     "verbatimModuleSyntax": true,

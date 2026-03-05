@@ -1,5 +1,5 @@
-import type { Theme } from './classes/theme.js'
-import { Vector2 } from './classes/vector2.js'
+import type { Theme } from './theme.js'
+import { Vector2 } from '../math/vector2.js'
 
 export class GameConfig {
   static canvas: HTMLCanvasElement

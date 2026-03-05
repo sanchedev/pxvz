@@ -1,5 +1,4 @@
-import { Game, Scene, Vector2 } from '../../canvas-engine/index.js'
-import { Text, View } from '../../canvas-engine/nodes/ui/index.js'
+import { Game, Scene, Vector2, Text, View } from '../../canvas-engine/index.js'
 
 const root = document.querySelector<HTMLElement>('#root')!
 

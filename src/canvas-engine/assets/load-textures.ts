@@ -1,4 +1,4 @@
-import { Texture, textures } from '../classes/texture.js'
+import { Texture, textures } from '../assets/texture.js'
 
 export async function loadTexture(id: string, url: string): Promise<void> {
   const image = new Image()

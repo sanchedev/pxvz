@@ -1,4 +1,4 @@
-import { Event } from '../lib/event.js'
+import { Event } from '../events/event.js'
 import { Node, type NodeOptions } from './node.js'
 
 export interface AnimationPlayerOptions extends NodeOptions {}

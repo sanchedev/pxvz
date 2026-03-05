@@ -1,6 +1,6 @@
-import { Vector2 } from '../classes/vector2.js'
-import { GameConfig } from '../game-config.js'
-import { Event } from '../lib/event.js'
+import { Vector2 } from '../math/vector2.js'
+import { GameConfig } from '../core/game-config.js'
+import { Event } from '../events/event.js'
 
 export interface NodeOptions {
   id?: string

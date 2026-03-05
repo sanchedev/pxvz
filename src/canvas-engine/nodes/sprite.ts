@@ -1,5 +1,5 @@
-import { getTexture, type Texture } from '../classes/texture.js'
-import type { Vector2 } from '../classes/vector2.js'
+import { getTexture, type Texture } from '../assets/texture.js'
+import type { Vector2 } from '../math/vector2.js'
 import { Node, type NodeOptions } from './node.js'
 
 export interface SpriteOptions extends NodeOptions {

@@ -1,8 +1,8 @@
-import { SceneManager } from './classes/scene-manager.js'
-import { Theme } from './classes/theme.js'
+import { SceneManager } from './scene-manager.js'
+import { Theme } from './theme.js'
 import { _set_gc, GameConfig } from './game-config.js'
-import { getDPRFromCtx } from './lib/dpr.js'
-import { Event } from './lib/event.js'
+import { getDPRFromCtx } from '../utils/dpr.js'
+import { Event } from '../events/event.js'
 
 interface SetupOptions {
   width: number

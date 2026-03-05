@@ -1,5 +1,5 @@
-import { getTexture } from '../classes/texture.js'
-import { Vector2 } from '../classes/vector2.js'
+import { getTexture } from '../assets/texture.js'
+import { Vector2 } from '../math/vector2.js'
 import type { AnimationKeyframe } from '../nodes/animation-player.js'
 import type { Node } from '../nodes/node.js'
 import type { Sprite } from '../nodes/sprite.js'
