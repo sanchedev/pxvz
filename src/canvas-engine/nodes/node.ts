@@ -50,7 +50,7 @@ export class Node {
   }
   get globalDeltaIncrease(): number {
     if (this.parent == null) return this.deltaIncrease
-    return this.deltaIncrease + this.parent.globalDeltaIncrease
+    return this.deltaIncrease * this.parent.globalDeltaIncrease
   }
 
   // Methods
@@ -72,15 +72,22 @@ export class Node {
   }
 
   addChild(child: Node) {
-    child.parent = this
-    child.zIndexChanged.on(() => {
-      this.children.sort((a, b) => a.globalZIndex - b.globalZIndex)
-    })
+    this.#attachChild(child)
     this.children.push(child)
-    this.children.sort((a, b) => a.globalZIndex - b.globalZIndex)
+    this.#sortChildren()
     if (this.isStarted) {
       child.start()
     }
+  }
+
+  #attachChild(child: Node) {
+    child.parent = this
+    child.zIndexChanged.on(() => {
+      this.#sortChildren()
+    })
+  }
+  #sortChildren() {
+    this.children.sort((a, b) => a.globalZIndex - b.globalZIndex)
   }
 
   // Events
@@ -92,13 +99,10 @@ export class Node {
 
   start(): void {
     for (const child of this.children) {
-      child.parent = this
-      child.zIndexChanged.on(() => {
-        this.children.sort((a, b) => a.globalZIndex - b.globalZIndex)
-      })
+      this.#attachChild(child)
     }
     this.isStarted = true
-    this.children.sort((a, b) => a.globalZIndex - b.globalZIndex)
+    this.#sortChildren()
 
     for (const node of this.children) {
       node.start()
