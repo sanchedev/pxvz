@@ -1,7 +1,19 @@
 import { Texture, textures } from '../assets/texture.js'
 
+/**
+ * The **`loadTexture`** function loads textures for be used.
+ * @param id Id for the texture
+ * @param url Image Url
+ */
 export async function loadTexture(id: string, url: string): Promise<void> {
-  if (textures.get(id)?.image.src === url) return
+  const texture = textures.get(id)
+  if (texture != null) {
+    if (texture.image.src === url) return
+
+    throw new Error(
+      `The id ${id} is used for other texture. You want load ${url}, but it is loaded ${texture.image.src}`,
+    )
+  }
 
   const image = new Image()
 
