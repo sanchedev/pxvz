@@ -8,7 +8,6 @@ export interface HookContext {
 let currentContext: HookContext[] = []
 
 export function startHooks() {
-  console.log('startHooks')
   currentContext.push({
     node: null,
     effects: [],
@@ -16,7 +15,6 @@ export function startHooks() {
 }
 
 export function finishHooks(node: Node) {
-  console.log('end', node)
   if (!currentContext) return
 
   currentContext.at(-1)?.effects.forEach((fn) => fn(node))
