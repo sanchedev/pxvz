@@ -1,5 +1,4 @@
 import { Game, Scene } from 'tiny-engine'
-import { Peashooter } from '../plants/peashooter.js'
 
 const root = document.querySelector<HTMLElement>('#root')!
 
@@ -9,7 +8,9 @@ Game.setup({
   root,
 })
 
-const mainScene = new Scene(() => <Peashooter />)
+const mainScene = new Scene(
+  async () => (await import('../plants/peashooter.js')).Peashooter,
+)
 
 Game.sceneManager.addScene('main', mainScene)
 Game.sceneManager.setScene('main')

@@ -1,28 +1,13 @@
-import type { Node } from '../nodes/node.js'
+import { jsx, type TinyComponent } from '../jsx-runtime.js'
+
+type RenderComponent = TinyComponent | Promise<TinyComponent>
 
 export class Scene {
-  static accLoad: Promise<void>[] | undefined = undefined
-
-  constructor(public render: () => Node) {}
+  constructor(public render: () => RenderComponent) {}
 
   async load() {
-    Scene.accLoad = []
+    const node = await this.render()
 
-    const node = this.render()
-
-    let counter = 0
-    const loads = Scene.accLoad.map((p) => {
-      return (async () => {
-        await p
-        counter++
-        console.log(`Loaded ${counter}/${loads!.length} assets.`)
-      })()
-    })
-
-    Scene.accLoad = undefined
-
-    await Promise.all(loads)
-
-    return node
+    return jsx(node, {})
   }
 }
