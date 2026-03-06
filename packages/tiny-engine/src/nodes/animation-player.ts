@@ -70,7 +70,7 @@ export class AnimationPlayer extends Node {
    * })
    *
    * return (
-   *   <sprite textureId='idle' size={new Vector(16,16)}>
+   *   <sprite textureId='idle' size={new Vector(16, 16)}>
    *     <animation-player id='animation-player' />
    *   </sprite>
    * )
