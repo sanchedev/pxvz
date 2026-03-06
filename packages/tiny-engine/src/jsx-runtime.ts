@@ -1,3 +1,4 @@
+import { finishHooks, startHooks } from './hooks/context.js'
 import { Node, type NodeOptions } from './nodes/index.js'
 
 type TinyComponent = typeof Node | ((props: any) => Node)
@@ -5,7 +6,7 @@ type TinyComponent = typeof Node | ((props: any) => Node)
 type PropsOf<T> = T extends (props: infer P) => Node
   ? P
   : T extends new (props: infer P) => Node
-    ? P
+    ? Omit<P, 'children'>
     : never
 
 type ReturnTypeOf<T> = T extends (props: any) => infer R
@@ -14,9 +15,9 @@ type ReturnTypeOf<T> = T extends (props: any) => infer R
     ? R
     : never
 
-type WithChildren<P> = P & {
-  children?: Node | Node[]
-}
+type Children = Node | Node[]
+
+type WithChildren<T> = T & { children?: Children }
 
 export function jsx<T extends TinyComponent>(
   type: T,
@@ -24,26 +25,37 @@ export function jsx<T extends TinyComponent>(
 ): ReturnTypeOf<T> {
   const { children } = props
 
-  const safeChildren = children?.flat(Infinity)
+  const safeChildren = (children ? [children].flat(Infinity) : []) as Node[]
+
+  let node: ReturnTypeOf<T>
+
+  startHooks()
 
   if (
     typeof type === 'function' &&
-    (type.prototype instanceof Node || type === Node)
+    ('nodeName' in type ||
+      type.prototype instanceof Node ||
+      type.prototype === Node.prototype)
   ) {
-    return new (type as typeof Node)({
+    const Nd = type as typeof Node
+    node = new Nd({
+      ...props,
+      children: safeChildren,
+    }) as ReturnTypeOf<T>
+  } else {
+    node = (type as (props: any) => Node)({
       ...props,
       children: safeChildren,
     }) as ReturnTypeOf<T>
   }
 
-  return (type as (props: any) => Node)({
-    ...props,
-    children: safeChildren,
-  }) as ReturnTypeOf<T>
+  finishHooks(node)
+
+  return node
 }
 
 export const jsxs = jsx
-export const Fragment = (props: NodeOptions) => new Node(props)
+export const Fragment = (props: NodeOptions) => jsx(Node, props)
 
 type TinyElement<T extends Node = Node> = T
 
