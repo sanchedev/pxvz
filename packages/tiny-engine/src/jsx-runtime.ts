@@ -1,7 +1,7 @@
 import { finishHooks, startHooks } from './hooks/context.js'
 import { Node, type NodeOptions } from './nodes/index.js'
 
-type TinyComponent = typeof Node | ((props: any) => Node)
+export type TinyComponent = typeof Node | ((props: any) => Node)
 
 type PropsOf<T> = T extends (props: infer P) => Node
   ? P
