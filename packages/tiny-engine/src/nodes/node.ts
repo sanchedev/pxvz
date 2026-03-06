@@ -1,6 +1,7 @@
 import { Vector2 } from '../math/vector2.js'
 import { GameConfig } from '../core/game-config.js'
 import { Event } from '../events/event.js'
+import { Nodes, type TypeElements } from './types.js'
 
 export interface NodeOptions {
   id?: string
@@ -9,9 +10,9 @@ export interface NodeOptions {
   children?: Node[]
 }
 
-export class Node {
-  static nodeName = 'node'
+export const nodeName = 'node'
 
+export class Node {
   id: string
   position: Vector2 = Vector2.ZERO
   #zIndex: number = 0
@@ -24,7 +25,7 @@ export class Node {
   isDestroyed: boolean = false
 
   constructor({ id, position, zIndex, children }: NodeOptions) {
-    this.id = id ?? Node.nodeName
+    this.id = id ?? nodeName
     if (position != null) this.position = position
     if (zIndex != null) this.#zIndex = zIndex
     this.children.push(...(children ?? []))
@@ -54,7 +55,10 @@ export class Node {
   }
 
   // Methods
-  getChild<T extends Node>(path: string): T {
+  getChild<T extends keyof TypeElements = 'node'>(
+    path: T | string,
+    nodeType?: T,
+  ): TypeElements[T] {
     const pathSplitted = path.split('/')
     let node: Node | undefined = this
     for (let i = 0; i < pathSplitted.length; i++) {
@@ -68,7 +72,20 @@ export class Node {
         'The node `' + path + '` in ' + this.toString() + ' does not exist.',
       )
 
-    return node as T
+    if (nodeType && Nodes[nodeType] != null) {
+      if (node instanceof Nodes[nodeType]) return node as TypeElements[T]
+      throw new Error(
+        'The node `' +
+          path +
+          '` in ' +
+          this.toString() +
+          ' is not a ' +
+          nodeType +
+          '.',
+      )
+    }
+
+    return node as TypeElements[T]
   }
 
   addChild(child: Node) {

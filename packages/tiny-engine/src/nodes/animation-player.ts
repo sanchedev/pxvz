@@ -3,9 +3,9 @@ import { Node, type NodeOptions } from './node.js'
 
 export interface AnimationPlayerOptions extends NodeOptions {}
 
-export class AnimationPlayer extends Node {
-  static nodeName = 'animation-player'
+export const animationPlayerNodeName = 'animation-player'
 
+export class AnimationPlayer extends Node {
   #animations = new Map<string, Animation>()
   #currentAnim: string | null = null
   #index = 0
@@ -17,7 +17,7 @@ export class AnimationPlayer extends Node {
   constructor(options: AnimationPlayerOptions) {
     super(options)
 
-    this.id = options.id ?? AnimationPlayer.nodeName
+    this.id = options.id ?? animationPlayerNodeName
   }
 
   // Events
