@@ -8,8 +8,9 @@ export class SceneManager {
 
   #currentNode: Node | null = null
 
-  addScene(name: string, scene: Scene) {
+  async addScene(name: string, scene: Scene, setit = false) {
     this.#scenes.set(name, scene)
+    if (setit) await this.setScene(name)
   }
 
   async preloadScene(scene: string) {
