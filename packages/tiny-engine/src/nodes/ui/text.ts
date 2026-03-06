@@ -13,7 +13,7 @@ export interface TextOptions extends NodeOptions {
 }
 
 export class Text extends Node {
-  nodeName = 'text'
+  static nodeName = 'text'
 
   text: string
   textAlign: TextAlign | undefined
@@ -26,7 +26,7 @@ export class Text extends Node {
   constructor(options: TextOptions) {
     super(options)
 
-    this.id = options.id ?? this.nodeName
+    this.id = options.id ?? Text.nodeName
 
     this.text = options.text
     this.textAlign = options.textAlign

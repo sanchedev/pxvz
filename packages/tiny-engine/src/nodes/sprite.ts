@@ -9,7 +9,7 @@ export interface SpriteOptions extends NodeOptions {
 }
 
 export class Sprite extends Node {
-  nodeName = 'sprite'
+  static nodeName = 'sprite'
 
   #textureId?: string | undefined
   #texture?: Texture | undefined
@@ -40,7 +40,7 @@ export class Sprite extends Node {
   constructor(options: SpriteOptions) {
     super(options)
 
-    this.id = options.id ?? this.nodeName
+    this.id = options.id ?? Sprite.nodeName
 
     this.margin = options.margin
     this.size = options.size

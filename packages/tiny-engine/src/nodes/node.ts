@@ -10,7 +10,7 @@ export interface NodeOptions {
 }
 
 export class Node {
-  nodeName = 'node'
+  static nodeName = 'node'
 
   id: string
   position: Vector2 = Vector2.ZERO
@@ -24,7 +24,7 @@ export class Node {
   isDestroyed: boolean = false
 
   constructor({ id, position, zIndex, children }: NodeOptions) {
-    this.id = id ?? this.nodeName
+    this.id = id ?? Node.nodeName
     if (position != null) this.position = position
     if (zIndex != null) this.#zIndex = zIndex
     this.children.push(...(children ?? []))

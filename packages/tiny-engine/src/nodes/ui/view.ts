@@ -8,7 +8,7 @@ export interface ViewOptions extends NodeOptions {
 }
 
 export class View extends Node {
-  nodeName = 'view'
+  static nodeName = 'view'
 
   backgroundColor: string
   size: Vector2
@@ -16,7 +16,7 @@ export class View extends Node {
   constructor(options: ViewOptions) {
     super(options)
 
-    this.id = options.id ?? this.nodeName
+    this.id = options.id ?? View.nodeName
 
     this.backgroundColor = options.backgroundColor ?? '#FFFFFF'
     this.size = options.size
