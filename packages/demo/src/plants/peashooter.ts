@@ -8,7 +8,7 @@ import {
   Vector2,
   Node,
   useLoad,
-} from '../../canvas-engine/index.js'
+} from 'tiny-engine'
 
 import { Pea } from '../projectiles/pea.js'
 

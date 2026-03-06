@@ -1,11 +1,14 @@
 {
   "name": "pxvz",
+  "private": true,
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "engine:build": "pnpm --filter tiny-engine build",
+    "engine:dev": "pnpm --filter tiny-engine dev",
+    "demo:build": "pnpm --filter pxvz-demo build",
+    "demo:dev": "pnpm --filter pxvz-demo dev"
   },
   "keywords": [],
   "author": "",

@@ -5,18 +5,13 @@ import {
   useAdd,
   Sprite,
   addStart,
-  useLoad,
-} from '../../canvas-engine/index.js'
+} from 'tiny-engine'
 
-function load() {
-  return [loadTexture('pea', 'assets/sprites/projectiles/pea.png')]
-}
+await loadTexture('pea', 'assets/sprites/projectiles/pea.png')
 
 const PEA_SPEED = 40
 
 export function Pea() {
-  useLoad(load)
-
   const add = useAdd<Sprite>()
 
   addStart((node) => {

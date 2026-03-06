@@ -1,4 +1,4 @@
-import { Game, Scene, Vector2, Text, View } from '../../canvas-engine/index.js'
+import { Game, Scene, Vector2, Text, View } from 'tiny-engine'
 
 const root = document.querySelector<HTMLElement>('#root')!
 

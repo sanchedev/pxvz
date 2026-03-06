@@ -1,0 +1,21 @@
+import esbuild from 'esbuild'
+
+const ctx = await esbuild.context({
+  entryPoints: ['src/main.tsx'],
+  bundle: true,
+  outfile: 'dist/bundle.js',
+  sourcemap: true,
+  platform: 'browser',
+  format: 'esm',
+  target: 'es2022',
+  jsxImportSource: 'tiny-engine',
+  loader: {
+    '.ts': 'ts',
+    '.tsx': 'tsx',
+  },
+  jsx: 'automatic',
+})
+
+await ctx.watch()
+
+console.log('watching...')

@@ -1,4 +1,4 @@
-import { Game, Scene } from '../../canvas-engine/index.js'
+import { Game, Scene } from 'tiny-engine'
 import { Peashooter } from '../plants/peashooter.js'
 
 const root = document.querySelector<HTMLElement>('#root')!
