@@ -13,8 +13,8 @@ await loadTexture(
 
 export function Peashooter() {
   useStart<'sprite'>((node) => {
-    const animPlayer = node.getChild('animation-player')
-    const peaContainer = node.getChild('pea-container', 'node')
+    const animPlayer = node.getChild('animation-player', 'animation-player')
+    const peaContainer = node.getChild('pea-container')
 
     animPlayer
       .add('idle', {

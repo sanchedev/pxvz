@@ -56,7 +56,7 @@ export class Node {
 
   // Methods
   getChild<T extends keyof TypeElements = 'node'>(
-    path: T | string,
+    path: string,
     nodeType?: T,
   ): TypeElements[T] {
     const pathSplitted = path.split('/')
