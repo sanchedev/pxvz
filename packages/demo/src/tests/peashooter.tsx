@@ -9,7 +9,7 @@ Game.setup({
   root,
 })
 
-const mainScene = new Scene(() => Peashooter())
+const mainScene = new Scene(() => <Peashooter />)
 
 Game.sceneManager.addScene('main', mainScene)
 Game.sceneManager.setScene('main')

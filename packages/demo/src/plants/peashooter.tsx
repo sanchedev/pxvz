@@ -1,33 +1,26 @@
 import {
   loadTexture,
-  useAdd,
   Sprite,
-  addStart,
   AnimationPlayer,
   kfFromSpriteSheet,
   Vector2,
   Node,
-  useLoad,
+  useStart,
 } from 'tiny-engine'
 
 import { Pea } from '../projectiles/pea.js'
 
-function load() {
-  console.log('load')
-  return [
-    loadTexture('peashooter.idle', 'assets/sprites/plants/peashooter/idle.png'),
-    loadTexture(
-      'peashooter.shoot',
-      'assets/sprites/plants/peashooter/shoot.png',
-    ),
-  ]
-}
+await loadTexture(
+  'peashooter.idle',
+  'assets/sprites/plants/peashooter/idle.png',
+)
+await loadTexture(
+  'peashooter.shoot',
+  'assets/sprites/plants/peashooter/shoot.png',
+)
 
 export function Peashooter() {
-  useLoad(load)
-  const add = useAdd<Sprite>()
-
-  addStart((node) => {
+  useStart((node: Sprite) => {
     console.log('start')
     const animPlayer = node.getChild<AnimationPlayer>('animation-player')
     const peaContainer = node.getChild<Node>('pea-container')
@@ -54,17 +47,17 @@ export function Peashooter() {
 
     animPlayer.animationIndexChanged.on((index) => {
       if (animPlayer.currentAnim === 'shoot' && index === 2) {
-        peaContainer.addChild(Pea())
+        peaContainer.addChild(<Pea />)
       }
     })
 
     animPlayer.play('idle')
-  }, add.adds)
+  })
 
-  return add.toNode(
+  return (
     <Sprite textureId='peashooter.idle' size={new Vector2(16, 16)}>
       <AnimationPlayer id='animation-player' />
       <Node id='pea-container' position={new Vector2(10, 8)} />
-    </Sprite>,
+    </Sprite>
   )
 }
