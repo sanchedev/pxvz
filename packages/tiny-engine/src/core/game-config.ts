@@ -2,13 +2,19 @@ import type { Theme } from './theme.js'
 import { Vector2 } from '../math/vector2.js'
 
 export class GameConfig {
+  /** The `canvas` of the `Game` */
   static canvas: HTMLCanvasElement
+  /** The `context` of the `canvas` */
   static ctx: CanvasRenderingContext2D
+  /** The `width` of the `canvas` */
   static width: number
+  /** The `height` of the `canvas` */
   static height: number
 
+  /** The `theme` of the `Game` */
   static theme: Theme
 
+  /** The `translate` represents the global translation of the `Game` */
   static translate = Vector2.ZERO
 }
 

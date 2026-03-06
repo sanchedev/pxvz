@@ -8,11 +8,22 @@ export class SceneManager {
 
   #currentNode: Node | null = null
 
+  /**
+   * The **`addScene`** method adds the `scene` with the `name`.
+   * @param name Name of the Scene
+   * @param scene Scene instance
+   * @param setit If you want set this scene after create it.
+   */
   async addScene(name: string, scene: Scene, setit = false) {
     this.#scenes.set(name, scene)
     if (setit) await this.setScene(name)
   }
 
+  /**
+   * The **`preloadScene`** method preloads the scene while the Game is running.
+   * @param scene Scene name
+   * @returns Returns a function to set the preloaded scene.
+   */
   async preloadScene(scene: string) {
     if (!this.#scenes.has(scene))
       throw new Error(`Scene ${scene}does not exist.`)
@@ -27,6 +38,10 @@ export class SceneManager {
     return setScene
   }
 
+  /**
+   * The **`setScene`** method sets and loads the `scene` with the Game paused.
+   * @param scene Scene name or `null`
+   */
   async setScene(scene: string | null) {
     this.#currentNode?.destroy()
 
@@ -42,10 +57,12 @@ export class SceneManager {
     this.#currentNode = await this.#scenes.get(scene)!.load()
   }
 
+  /** The read-only **`currentScene`** property returns the current scene name. */
   get currentScene() {
     return this.#currentScene
   }
 
+  /** The read-only **`currentNode`** property returns the current scene node. */
   get currentNode() {
     return this.#currentNode
   }
