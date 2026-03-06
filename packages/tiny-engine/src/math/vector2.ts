@@ -10,9 +10,9 @@ export class Vector2 {
   }
 
   constructor(
-    /** The **`x`** property of `Vector2` represents the X axis. */
+    /** The **`x`** property of `Vector2` represents the x-coordinate. */
     public x: number,
-    /** The **`y`** property of `Vector2` represents the Y axis. */
+    /** The **`y`** property of `Vector2` represents the y-coordinate. */
     public y: number,
   ) {}
 

@@ -55,16 +55,16 @@ export class AnimationPlayer extends Node {
    *   const animPlayer = sprite.getChild('animation-player', 'animation-player')
    *
    *   animPlayer
-   *    .add('idle', {
-   *      fps: 4,
-   *      keyframes: kfFromSpriteSheet(sprite, 'idle', 4),
-   *      loop: true,
-   *    })
-   *    .add('walk', {
-   *      fps: 4,
-   *      keyframes: kfFromSpriteSheet(sprite, 'walk', 4),
-   *      loop: true,
-   *    })
+   *     .add('idle', {
+   *       fps: 4,
+   *       keyframes: kfFromSpriteSheet(sprite, 'idle', 4),
+   *       loop: true,
+   *     })
+   *     .add('walk', {
+   *       fps: 4,
+   *       keyframes: kfFromSpriteSheet(sprite, 'walk', 4),
+   *       loop: true,
+   *     })
    *
    *   animPlayer.play('idle')
    * })
