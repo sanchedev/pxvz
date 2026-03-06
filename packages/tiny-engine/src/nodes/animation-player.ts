@@ -3,6 +3,7 @@ import { Node, type NodeOptions } from './node.js'
 
 export interface AnimationPlayerOptions extends NodeOptions {}
 
+/** Default **`id`** for `AnimationPlayer` and it is used for jsx tags */
 export const animationPlayerNodeName = 'animation-player'
 
 export class AnimationPlayer extends Node {
@@ -10,8 +11,13 @@ export class AnimationPlayer extends Node {
   #currentAnim: string | null = null
   #index = 0
 
+  /** The read-only **`currentAnim`** property returns the current animation name */
   get currentAnim() {
     return this.#currentAnim
+  }
+  /** The read-only **`index`** property returns the current index */
+  get index() {
+    return Math.floor(this.#index)
   }
 
   constructor(options: AnimationPlayerOptions) {
@@ -21,24 +27,82 @@ export class AnimationPlayer extends Node {
   }
 
   // Events
+  /**
+   * Detects whether `currentAnim` **change**
+   */
   animationChanged = new Event<[newAnim: string, oldAnim: string | null]>()
+  /**
+   * Detects whether `stop` is **called**
+   */
   animationStopped = new Event<[anim: string]>()
+  /**
+   * Detects whether this `index` **change**
+   */
   animationIndexChanged = new Event<[index: number]>()
+  /**
+   * Detects whether the current animation **end**
+   */
   animationEnded = new Event<[anim: string]>()
 
+  /**
+   * The **`add`** method adds an animation with a key.
+   * @param animName Animation identifier
+   * @param animation Animation object
+   *
+   * @example
+   * ```tsx
+   * useStart<'sprite'>((sprite) => {
+   *   const animPlayer = sprite.getChild('animation-player', 'animation-player')
+   *
+   *   animPlayer
+   *    .add('idle', {
+   *      fps: 4,
+   *      keyframes: kfFromSpriteSheet(sprite, 'idle', 4),
+   *      loop: true,
+   *    })
+   *    .add('walk', {
+   *      fps: 4,
+   *      keyframes: kfFromSpriteSheet(sprite, 'walk', 4),
+   *      loop: true,
+   *    })
+   *
+   *   animPlayer.play('idle')
+   * })
+   *
+   * return (
+   *   <sprite textureId='idle' size={new Vector(16,16)}>
+   *     <animation-player id='animation-player' />
+   *   </sprite>
+   * )
+   * ```
+   */
   add(animName: string, animation: Animation) {
     this.#animations.set(animName, animation)
     return this
   }
 
+  /**
+   * The **`play`** method plays an animation by id.
+   * @param animName Animation identifier
+   * @param index Index to start (default `0`)
+   *
+   * @example
+   * ```ts
+   * animPlayer.play('idle')
+   * ```
+   */
   play(animName: string, index?: number) {
-    this.animationChanged.emit(animName, this.#currentAnim)
     if (this.#currentAnim != null) this.stop()
+    const oldAnim = this.#currentAnim
     this.#index = index ?? 0
     this.#currentAnim = animName
+    this.animationChanged.emit(animName, oldAnim)
     this.animationIndexChanged.emit(index ?? 0)
   }
 
+  /**
+   * The **`stop`** method stops the current animation.
+   */
   stop() {
     if (this.#currentAnim == null) return
     this.animationStopped.emit(this.#currentAnim)
@@ -62,8 +126,8 @@ export class AnimationPlayer extends Node {
         return
       }
 
-      this.animationIndexChanged.emit(0)
       this.#index = 0
+      this.animationIndexChanged.emit(0)
     }
 
     const i = Math.floor(this.#index)
@@ -72,7 +136,7 @@ export class AnimationPlayer extends Node {
 
     if (kf == null) throw new Error(`The keyframe index ${i} does not exist.`)
 
-    kf(this.#index / anim.fps)
+    kf(this.#index % 1)
 
     this.#index += delta * anim.fps
 
@@ -87,9 +151,14 @@ export class AnimationPlayer extends Node {
   }
 }
 
+new Audio().loop
+
 export interface Animation {
+  /** Frames per second */
   fps: number
+  /** Frames in the `Animation` */
   keyframes: AnimationKeyframe[]
+  /** Whether the `Animation` should start over when it reaches the end. */
   loop?: boolean | undefined
 }
 
