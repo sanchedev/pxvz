@@ -12,20 +12,16 @@ await loadTexture(
 )
 
 export function Peashooter() {
-  const usedSprite = useNode<'sprite'>()
-  const usedAnimPlayer = useNode<'animation-player'>()
-  const usedProjectilesContainer = useNode({
+  const spriteUsed = useNode<'sprite'>()
+  const animPlayerUsed = useNode<'animation-player'>()
+  const projectilesContainerUsed = useNode({
     nodeType: 'node',
     path: '/projectiles',
   })
 
   const handleStart = () => {
-    const sprite = usedSprite.node
-    const animPlayer = usedAnimPlayer.node
-    const projectilesContainer = usedProjectilesContainer.node
-
-    if (animPlayer == null || sprite == null || projectilesContainer == null)
-      return
+    const sprite = spriteUsed.get()
+    const animPlayer = animPlayerUsed.get()
 
     animPlayer
       .add('idle', {
@@ -39,32 +35,42 @@ export function Peashooter() {
         loop: false,
       })
 
-    animPlayer.animationEnded.on((anim) => {
-      if (anim === 'idle') {
-        animPlayer.play('shoot')
-      } else {
-        animPlayer.play('idle')
-      }
-    })
-
-    animPlayer.animationIndexChanged.on((index) => {
-      if (animPlayer.currentAnim === 'shoot' && index === 2) {
-        projectilesContainer.addChild(
-          <Pea position={sprite.globalPosition.toAdded(new Vector2(10, 8))} />,
-        )
-      }
-    })
-
     animPlayer.play('idle')
+  }
+
+  const handleAnimationEnd = (anim: string) => {
+    const animPlayer = animPlayerUsed.get()
+
+    if (anim === 'idle') {
+      animPlayer.play('shoot')
+    } else {
+      animPlayer.play('idle')
+    }
+  }
+
+  const handleAnimationIndexChange = (index: number) => {
+    const sprite = spriteUsed.get()
+    const animPlayer = animPlayerUsed.get()
+    const projectilesContainer = projectilesContainerUsed.get()
+
+    if (animPlayer.currentAnim === 'shoot' && index === 2) {
+      projectilesContainer.addChild(
+        <Pea position={sprite.globalPosition.toAdded(new Vector2(10, 8))} />,
+      )
+    }
   }
 
   return (
     <sprite
+      use={spriteUsed}
       textureId='peashooter.idle'
       size={new Vector2(16, 16)}
-      use={usedSprite}
       onStart={handleStart}>
-      <animation-player use={usedAnimPlayer} />
+      <animation-player
+        use={animPlayerUsed}
+        onAnimationEnd={handleAnimationEnd}
+        onAnimationIndexChange={handleAnimationIndexChange}
+      />
     </sprite>
   )
 }

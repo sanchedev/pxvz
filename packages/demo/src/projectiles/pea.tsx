@@ -9,12 +9,10 @@ interface PeaProps {
 }
 
 export function Pea({ position }: PeaProps) {
-  const usedPea = useNode<'sprite'>()
+  const peaUsed = useNode<'sprite'>()
 
   const handleUpdate = (delta: number) => {
-    const pea = usedPea.node
-
-    if (pea == null) return
+    const pea = peaUsed.get()
 
     if (pea.globalPosition.x <= GameConfig.width) {
       pea.position.x += delta * PEA_SPEED
@@ -25,9 +23,9 @@ export function Pea({ position }: PeaProps) {
 
   return (
     <sprite
+      use={peaUsed}
       textureId='pea'
       position={position}
-      use={usedPea}
       onUpdate={handleUpdate}
     />
   )
