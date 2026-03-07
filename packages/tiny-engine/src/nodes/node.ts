@@ -326,13 +326,20 @@ export class Node {
     path: string,
     nodeType?: T,
   ): TypeElements[T] {
+    let node: Node | undefined
+
     const pathSplitted = path.split('/')
-    let node: Node | undefined =
-      path[0] === '/' ? (Game.sceneManager.currentNode ?? undefined) : this
+    if (path.startsWith('/')) {
+      node = Game.sceneManager.currentNode ?? undefined
+      pathSplitted.shift()
+    } else {
+      node = this
+    }
 
     for (let i = 0; i < pathSplitted.length; i++) {
       if (node == null) break
       const n = pathSplitted[i]
+      if (n === '' && i === pathSplitted.length - 1) break
       if (n === '.') {
         continue
       }
@@ -345,7 +352,7 @@ export class Node {
 
     if (node == null)
       throw new Error(
-        'The node `' + path + '` in ' + this.toString() + ' does not exist.',
+        'The node `' + path + '` in `' + this.id + '` does not exist.',
       )
 
     if (nodeType && Nodes[nodeType] != null) {
