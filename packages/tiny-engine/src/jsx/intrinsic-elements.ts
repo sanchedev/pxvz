@@ -10,21 +10,109 @@ import type { NodesOptions } from '../nodes/types.js'
 import type { UsedNode } from '../hooks/node.js'
 
 export interface NodeElement<T extends Node = Node> {
+  /** The **`use`** property can be user for `useNode` hook.
+   * @example
+   * ```tsx
+   * const spriteUsed = useNode()
+   *
+   * return <sprite use={spriteUsed} />
+   * ```
+   */
   use?: UsedNode<T>
+  /** The **`onStart`** property connects a function to `Node.started` event.
+   * @example
+   * ```tsx
+   * const handleStart = () => {
+   *   // ...
+   * }
+   *
+   * return <node onStart={handleStart} />
+   * ```
+   */
   onStart?: Parameters<Node['started']['on']>[0]
+  /** The **`onDraw`** property connects a function to `Node.drawed` event.
+   * @example
+   * ```tsx
+   * const handleDraw = (delta: number) => {
+   *   // ...
+   * }
+   *
+   * return <node onDraw={handleDraw} />
+   * ```
+   */
   onDraw?: Parameters<Node['drawed']['on']>[0]
+  /** The **`onUpdate`** property connects a function to `Node.updated` event.
+   * @example
+   * ```tsx
+   * const handleUpdate = (delta: number) => {
+   *   // ...
+   * }
+   *
+   * return <node onUpdate={handleUpdate} />
+   * ```
+   */
   onUpdate?: Parameters<Node['updated']['on']>[0]
+  /** The **`onDestroy`** property connects a function to `Node.destroyed` event.
+   * @example
+   * ```tsx
+   * const handleDestroy = () => {
+   *   // ...
+   * }
+   *
+   * return <node onDestroy={handleDestroy} />
+   * ```
+   */
   onDestroy?: Parameters<Node['destroyed']['on']>[0]
 }
 
 export interface AnimationPlayerElement<
   T extends AnimationPlayer = AnimationPlayer,
 > extends NodeElement<T> {
+  /** The **`onAnimationChange`** property connects a function to `AnimationPlayer.animationChanged` event.
+   * @example
+   * ```tsx
+   * const handleAnimationChange = (newAnim: string, oldAnim: string | null) => {
+   *   // ...
+   * }
+   *
+   * return <animation-player onAnimationChange={handleAnimationChange} />
+   * ```
+   */
   onAnimationChange?: Parameters<AnimationPlayer['animationChanged']['on']>[0]
+  /** The **`onAnimationEnd`** property connects a function to `AnimationPlayer.animationEnded` event.
+   * @example
+   * ```tsx
+   * const handleAnimationEnd = (anim: string) => {
+   *   // ...
+   * }
+   *
+   * return <animation-player onAnimationEnd={handleAnimationEnd} />
+   * ```
+   */
   onAnimationEnd?: Parameters<AnimationPlayer['animationEnded']['on']>[0]
+  /** The **`onAnimationIndexChange`** property connects a function to `AnimationPlayer.animationIndexChanged` event.
+   * @example
+   * ```tsx
+   * const handleAnimationIndexChange = (index: number) => {
+   *   // ...
+   * }
+   *
+   * return <animation-player onAnimationIndexChange={handleAnimationIndexChange} />
+   * ```
+   */
   onAnimationIndexChange?: Parameters<
     AnimationPlayer['animationIndexChanged']['on']
   >[0]
+  /** The **`onAnimationStop`** property connects a function to `AnimationPlayer.animationStopped` event.
+   * @example
+   * ```tsx
+   * const handleAnimationStop = (anim: string) => {
+   *   // ...
+   * }
+   *
+   * return <animation-player onAnimationStop={handleAnimationStop} />
+   * ```
+   */
   onAnimationStop?: Parameters<AnimationPlayer['animationStopped']['on']>[0]
 }
 
