@@ -1,10 +1,20 @@
-import { GameConfig, loadTexture, useStart, useUpdate } from 'tiny-engine'
+import {
+  GameConfig,
+  loadTexture,
+  useStart,
+  useUpdate,
+  Vector2,
+} from 'tiny-engine'
 
 await loadTexture('pea', 'assets/sprites/projectiles/pea.png')
 
 const PEA_SPEED = 40
 
-export function Pea() {
+interface PeaProps {
+  position: Vector2
+}
+
+export function Pea({ position }: PeaProps) {
   useStart<'sprite'>((node) => {
     console.log(node)
   })
@@ -16,5 +26,5 @@ export function Pea() {
     }
   })
 
-  return <sprite textureId='pea' />
+  return <sprite textureId='pea' position={position} />
 }

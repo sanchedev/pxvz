@@ -14,7 +14,7 @@ await loadTexture(
 export function Peashooter() {
   useStart<'sprite'>((node) => {
     const animPlayer = node.getChild('animation-player', 'animation-player')
-    const peaContainer = node.getChild('pea-container')
+    const projectilesContainer = node.getChild('/projectiles')
 
     animPlayer
       .add('idle', {
@@ -38,7 +38,9 @@ export function Peashooter() {
 
     animPlayer.animationIndexChanged.on((index) => {
       if (animPlayer.currentAnim === 'shoot' && index === 2) {
-        peaContainer.addChild(<Pea />)
+        projectilesContainer.addChild(
+          <Pea position={node.globalPosition.toAdded(new Vector2(10, 8))} />,
+        )
       }
     })
 
@@ -48,7 +50,6 @@ export function Peashooter() {
   return (
     <sprite textureId='peashooter.idle' size={new Vector2(16, 16)}>
       <animation-player id='animation-player' />
-      <node id='pea-container' position={new Vector2(10, 8)} />
     </sprite>
   )
 }
