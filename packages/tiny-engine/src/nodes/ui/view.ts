@@ -14,9 +14,7 @@ export class View extends Node {
   size: Vector2
 
   constructor(options: ViewOptions) {
-    super(options)
-
-    this.id = options.id ?? viewNodeName
+    super({ ...options, id: options.id ?? viewNodeName })
 
     this.backgroundColor = options.backgroundColor ?? '#FFFFFF'
     this.size = options.size

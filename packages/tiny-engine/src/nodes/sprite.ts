@@ -157,9 +157,7 @@ export class Sprite extends Node {
   }
 
   constructor(options: SpriteOptions) {
-    super(options)
-
-    this.id = options.id ?? spriteNodeName
+    super({ ...options, id: options.id ?? spriteNodeName })
 
     this.margin = options.margin
     this.size = options.size

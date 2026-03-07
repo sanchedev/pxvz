@@ -21,9 +21,7 @@ export class AnimationPlayer extends Node {
   }
 
   constructor(options: AnimationPlayerOptions) {
-    super(options)
-
-    this.id = options.id ?? animationPlayerNodeName
+    super({ ...options, id: options.id ?? animationPlayerNodeName })
   }
 
   // Events

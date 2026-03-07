@@ -2,12 +2,14 @@ import { Vector2 } from '../math/vector2.js'
 import { GameConfig } from '../core/game-config.js'
 import { Event } from '../events/event.js'
 import { Nodes, type TypeElements } from './types.js'
+import { Game } from '../core/game.js'
 
 export interface NodeOptions {
   /**
-   * The **`id`** property of `Node` represents the node's identifier.
+   * The read-only **`id`** property of `Node` represents the node's identifier.
    * It can be used to get this node.
    * It can be not unique.
+   * Should match with ([a-zA-Z][a-zA-Z0-9-_]*)
    *
    * @example
    * ```jsx
@@ -102,45 +104,10 @@ export interface NodeOptions {
 /** Default **`id`** for `Node` and it is used for jsx tags */
 export const nodeName = 'node'
 
+const idRegEx = /([a-zA-Z][a-zA-Z0-9-_]*)/g
+
 export class Node {
-  /**
-   * The **`id`** property of `Node` represents the node's identifier.
-   * It can be used to get this node.
-   * It can be not unique.
-   *
-   * @example
-   * ```jsx
-   * useStart((node) => {
-   *   const container = node.getChild('container')
-   *   // ...
-   * })
-   *
-   * return (
-   *   <node>
-   *     <node id='container' />
-   *   </node>
-   * )
-   * ```
-   *
-   * **`id`** can be used as path.
-   *
-   * @example
-   * ```jsx
-   * useStart((node) => {
-   *   const child2 = node.getChild('child/child2')
-   *   // ...
-   * })
-   *
-   * return (
-   *   <node>
-   *     <node id='child1'>
-   *       <node id='child2' />
-   *     </node>
-   *   </node>
-   * )
-   * ```
-   */
-  id: string
+  #id: string
   /**
    * The **`position`** property of a `Node`.
    * It represents the position in the plane.
@@ -197,11 +164,62 @@ export class Node {
   isDestroyed: boolean = false
 
   constructor({ id, position, zIndex, deltaIncrease, children }: NodeOptions) {
-    this.id = id ?? nodeName
+    if (id) {
+      const matches = id.match(idRegEx)
+      if (matches == null || matches.length !== 1 || matches[0] !== id) {
+        throw new Error(
+          'The id ' + id + ' does not matches with `([a-zA-Z][a-zA-Z0-9-_]*)`',
+        )
+      }
+    }
+
+    this.#id = id ?? nodeName
     if (position != null) this.position = position
     if (zIndex != null) this.#zIndex = zIndex
     if (deltaIncrease != null) this.deltaIncrease = deltaIncrease
     this._children.push(...(children ?? []))
+  }
+
+  /**
+   * The read-only **`id`** property of `Node` represents the node's identifier.
+   * It can be used to get this node.
+   * It can be not unique.
+   * Should match with ([a-zA-Z][a-zA-Z0-9-_]*)
+   *
+   * @example
+   * ```jsx
+   * useStart((node) => {
+   *   const container = node.getChild('container')
+   *   // ...
+   * })
+   *
+   * return (
+   *   <node>
+   *     <node id='container' />
+   *   </node>
+   * )
+   * ```
+   *
+   * **`id`** can be used as path.
+   *
+   * @example
+   * ```jsx
+   * useStart((node) => {
+   *   const child2 = node.getChild('child/child2')
+   *   // ...
+   * })
+   *
+   * return (
+   *   <node>
+   *     <node id='child1'>
+   *       <node id='child2' />
+   *     </node>
+   *   </node>
+   * )
+   * ```
+   */
+  get id() {
+    return this.#id
   }
 
   /**
@@ -309,10 +327,19 @@ export class Node {
     nodeType?: T,
   ): TypeElements[T] {
     const pathSplitted = path.split('/')
-    let node: Node | undefined = this
+    let node: Node | undefined =
+      path[0] === '/' ? (Game.sceneManager.currentNode ?? undefined) : this
+
     for (let i = 0; i < pathSplitted.length; i++) {
       if (node == null) break
       const n = pathSplitted[i]
+      if (n === '.') {
+        continue
+      }
+      if (n === '..') {
+        node = node.parent
+        continue
+      }
       node = node._children.find((node) => node.id === n)
     }
 

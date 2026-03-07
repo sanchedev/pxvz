@@ -24,9 +24,7 @@ export class Text extends Node {
   width: number
 
   constructor(options: TextOptions) {
-    super(options)
-
-    this.id = options.id ?? textNodeName
+    super({ ...options, id: options.id ?? textNodeName })
 
     this.text = options.text
     this.textAlign = options.textAlign
