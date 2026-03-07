@@ -19,8 +19,12 @@ export const Nodes = {
   [textNodeName]: Text,
 }
 
+export type NodesOptions = {
+  [P in keyof typeof Nodes]: NodeToOptions<(typeof Nodes)[P]>
+}
+
 export type Elements = {
-  [P in keyof typeof Nodes]: WithChildren<NodeToOptions<(typeof Nodes)[P]>>
+  [P in keyof NodesOptions]: WithChildren<NodesOptions[P]>
 }
 
 export type TypeElements = {

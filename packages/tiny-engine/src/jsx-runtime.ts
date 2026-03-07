@@ -6,6 +6,11 @@ import {
   type TypeElements,
 } from './nodes/types.js'
 import { Node, type NodeOptions } from './nodes/index.js'
+import {
+  getNodeFromClass,
+  getNodeFromComp,
+  getNodeFromKey,
+} from './jsx/node.js'
 
 export type TinyComponent =
   | keyof JSX.IntrinsicElements
@@ -34,33 +39,45 @@ export function jsx<T extends TinyComponent>(
 ): ReturnTypeOf<T> {
   const { children } = props
 
-  const safeChildren = (children ? [children].flat(Infinity) : []) as Node[]
+  const safeChildren = (children ? [children].flat(Infinity) : undefined) as
+    | Node[]
+    | undefined
+
+  const newProps = { ...props, children: safeChildren }
 
   let node: ReturnTypeOf<T>
 
   startHooks()
 
   if (typeof type === 'string') {
-    node = new (Nodes[type as keyof JSX.IntrinsicElements] as typeof Node)({
-      ...props,
-      children: safeChildren,
-    } as NodeToOptions<typeof Node>) as ReturnTypeOf<T>
-  } else if (
-    typeof type === 'function' &&
-    ('nodeName' in type ||
-      type.prototype instanceof Node ||
-      type.prototype === Node.prototype)
-  ) {
-    const Nd = type as typeof Node
-    node = new Nd({
-      ...props,
-      children: safeChildren,
-    }) as ReturnTypeOf<T>
+    // Type is a string
+    if (!Object.keys(Nodes).includes(type))
+      throw new Error(`Node with name ${type} does not exist.`)
+    // Type is a key of nodes
+
+    node = getNodeFromKey(type, newProps) as ReturnTypeOf<T>
+  } else if (typeof type === 'function') {
+    // Type is a class or a function
+    if (
+      'prototype' in type &&
+      Object.getOwnPropertyDescriptor(type, 'prototype')?.writable === false &&
+      'nodeName' in type &&
+      (type.prototype instanceof Node || type.prototype === Node.prototype)
+    ) {
+      // Type is a node class
+      node = getNodeFromClass(type as typeof Node, props) as ReturnTypeOf<T>
+    } else {
+      node = getNodeFromComp(
+        type as (props: any) => Node,
+        props,
+      ) as ReturnTypeOf<T>
+    }
   } else {
-    node = (type as (props: any) => Node)({
-      ...props,
-      children: safeChildren,
-    }) as ReturnTypeOf<T>
+    throw new Error('Type incompatible')
+  }
+
+  if (!(node instanceof Node)) {
+    throw new Error('The function or class shoulds return a Node.')
   }
 
   finishHooks(node)
