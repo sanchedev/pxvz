@@ -1,11 +1,16 @@
 import type { Node } from '../nodes/node.js'
 import { Nodes, type NodesOptions, type NodeToOptions } from '../nodes/types.js'
+import {
+  NodeElements,
+  type NodeIntrinsicElements,
+} from './intrinsic-elements.js'
 
 export function getNodeFromKey<T extends keyof typeof Nodes>(
   type: T,
-  props: NodesOptions[T],
+  props: NodeIntrinsicElements[T],
 ): (typeof Nodes)[T]['prototype'] {
-  return getNodeFromClass(Nodes[type], props)
+  const node = getNodeFromClass(Nodes[type], props as NodesOptions[T])
+  return NodeElements[type as 'node'](node as Node, props)
 }
 
 export function getNodeFromComp<T extends {}, K extends Node>(
@@ -18,6 +23,6 @@ export function getNodeFromComp<T extends {}, K extends Node>(
 export function getNodeFromClass<T extends typeof Node>(
   nodeClass: T,
   props: NodeToOptions<T>,
-) {
+): T['prototype'] {
   return new nodeClass(props)
 }

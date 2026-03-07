@@ -1,11 +1,12 @@
 import { finishHooks, startHooks } from './hooks/context.js'
-import { type Elements, Nodes, type TypeElements } from './nodes/types.js'
+import { Nodes, type TypeElements } from './nodes/types.js'
 import { Node, type NodeOptions } from './nodes/index.js'
 import {
   getNodeFromClass,
   getNodeFromComp,
   getNodeFromKey,
 } from './jsx/node.js'
+import type { NodeIntrinsicElements } from './jsx/intrinsic-elements.js'
 
 export type TinyComponent =
   | keyof JSX.IntrinsicElements
@@ -90,7 +91,7 @@ declare global {
   namespace JSX {
     type Element = Node
 
-    interface IntrinsicElements extends Elements {}
+    interface IntrinsicElements extends NodeIntrinsicElements {}
     interface NodeTypes extends TypeElements {}
   }
 }
