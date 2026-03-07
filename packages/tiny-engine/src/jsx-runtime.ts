@@ -1,10 +1,5 @@
 import { finishHooks, startHooks } from './hooks/context.js'
-import {
-  type Elements,
-  Nodes,
-  type NodeToOptions,
-  type TypeElements,
-} from './nodes/types.js'
+import { type Elements, Nodes, type TypeElements } from './nodes/types.js'
 import { Node, type NodeOptions } from './nodes/index.js'
 import {
   getNodeFromClass,
