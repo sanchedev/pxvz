@@ -3,6 +3,7 @@ import { GameConfig } from '../core/game-config.js'
 import { Event } from '../events/event.js'
 import { Nodes, type NodeTypes } from './types.js'
 import { Game } from '../core/game.js'
+import { Signal } from '../utils/signal.js'
 
 export interface NodeOptions {
   /**
@@ -66,7 +67,7 @@ export interface NodeOptions {
    * )
    * ```
    */
-  position?: Vector2
+  position?: Vector2 | Signal<Vector2>
   /**
    * The **`zIndex`** property of a `Node`.
    * It represents the position in Z in the plane.
@@ -79,7 +80,7 @@ export interface NodeOptions {
    * </node>
    * ```
    */
-  zIndex?: number
+  zIndex?: number | Signal<number>
   /**
    * The **`deltaIncrease`** property of a `Node` change the speed of self.
    *
@@ -97,7 +98,7 @@ export interface NodeOptions {
    * )
    * ```
    */
-  deltaIncrease?: number
+  deltaIncrease?: number | Signal<number>
   children?: Node[]
 }
 
@@ -174,9 +175,30 @@ export class Node {
     }
 
     this.#id = id ?? nodeName
-    if (position != null) this.position = position
-    if (zIndex != null) this.#zIndex = zIndex
-    if (deltaIncrease != null) this.deltaIncrease = deltaIncrease
+    if (position != null) {
+      if (position instanceof Signal) {
+        this.position = position.value
+        position.subscribe((val) => (this.position = val))
+      } else {
+        this.position = position
+      }
+    }
+    if (zIndex != null) {
+      if (zIndex instanceof Signal) {
+        this.#zIndex = zIndex.value
+        zIndex.subscribe((val) => (this.zIndex = val))
+      } else {
+        this.#zIndex = zIndex
+      }
+    }
+    if (deltaIncrease != null) {
+      if (deltaIncrease instanceof Signal) {
+        this.deltaIncrease = deltaIncrease.value
+        deltaIncrease.subscribe((val) => (this.deltaIncrease = val))
+      } else {
+        this.deltaIncrease = deltaIncrease
+      }
+    }
     this._children.push(...(children ?? []))
   }
 

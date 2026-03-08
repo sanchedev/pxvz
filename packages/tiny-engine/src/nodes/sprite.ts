@@ -1,5 +1,6 @@
 import { getTexture, type Texture } from '../assets/texture.js'
 import type { Vector2 } from '../math/vector2.js'
+import { Signal } from '../utils/signal.js'
 import { Node, type NodeOptions } from './node.js'
 
 export interface SpriteOptions extends NodeOptions {
@@ -24,7 +25,7 @@ export interface SpriteOptions extends NodeOptions {
    * }
    * ```
    */
-  textureId?: string
+  textureId?: string | Signal<string>
   /**
    * The **`margin`** property of `Sprite` represents the sprite's texture offset.
    *
@@ -40,7 +41,7 @@ export interface SpriteOptions extends NodeOptions {
    * }
    * ```
    */
-  margin?: Vector2
+  margin?: Vector2 | Signal<Vector2>
   /**
    * The **`size`** property of `Sprite` represents the sprite's size.
    *
@@ -60,7 +61,7 @@ export interface SpriteOptions extends NodeOptions {
    * }
    * ```
    */
-  size?: Vector2
+  size?: Vector2 | Signal<Vector2>
 }
 
 /** Default **`id`** for `Sprite` and it is used for jsx tags */
@@ -159,9 +160,30 @@ export class Sprite extends Node {
   constructor(options: SpriteOptions) {
     super({ ...options, id: options.id ?? spriteNodeName })
 
-    this.margin = options.margin
-    this.size = options.size
-    this.textureId = options.textureId
+    if (options.margin != null) {
+      if (options.margin instanceof Signal) {
+        this.margin = options.margin.value
+        options.margin.subscribe((val) => (options.margin = val))
+      } else {
+        this.margin = options.margin
+      }
+    }
+    if (options.size != null) {
+      if (options.size instanceof Signal) {
+        this.size = options.size.value
+        options.size.subscribe((val) => (options.size = val))
+      } else {
+        this.size = options.size
+      }
+    }
+    if (options.textureId != null) {
+      if (options.textureId instanceof Signal) {
+        this.textureId = options.textureId.value
+        options.textureId.subscribe((val) => (options.textureId = val))
+      } else {
+        this.textureId = options.textureId
+      }
+    }
   }
 
   start(): void {

@@ -1,4 +1,10 @@
-import { GameConfig, loadTexture, useNode, Vector2 } from 'tiny-engine'
+import {
+  GameConfig,
+  loadTexture,
+  useNode,
+  useSignal,
+  Vector2,
+} from 'tiny-engine'
 
 await loadTexture('pea', 'assets/sprites/projectiles/pea.png')
 
@@ -10,10 +16,11 @@ interface PeaProps {
 
 export function Pea({ position }: PeaProps) {
   const pea = useNode<'sprite'>()
+  const peaPos = useSignal(position)
 
   const handleUpdate = (delta: number) => {
     if (pea.globalPosition.x <= GameConfig.width) {
-      pea.position.x += delta * PEA_SPEED
+      peaPos.value.x += delta * PEA_SPEED
     } else {
       pea.destroy()
     }
@@ -23,7 +30,7 @@ export function Pea({ position }: PeaProps) {
     <sprite
       use={pea}
       textureId='pea'
-      position={position}
+      position={peaPos}
       onUpdate={handleUpdate}
     />
   )
