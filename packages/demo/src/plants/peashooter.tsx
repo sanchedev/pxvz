@@ -12,17 +12,14 @@ await loadTexture(
 )
 
 export function Peashooter() {
-  const spriteUsed = useNode<'sprite'>()
-  const animPlayerUsed = useNode<'animation-player'>()
-  const projectilesContainerUsed = useNode({
+  const sprite = useNode<'sprite'>()
+  const animPlayer = useNode<'animation-player'>()
+  const projectilesContainer = useNode({
     nodeType: 'node',
     path: '/projectiles',
   })
 
   const handleStart = () => {
-    const sprite = spriteUsed.get()
-    const animPlayer = animPlayerUsed.get()
-
     animPlayer
       .add('idle', {
         fps: 4,
@@ -39,8 +36,6 @@ export function Peashooter() {
   }
 
   const handleAnimationEnd = (anim: string) => {
-    const animPlayer = animPlayerUsed.get()
-
     if (anim === 'idle') {
       animPlayer.play('shoot')
     } else {
@@ -49,10 +44,6 @@ export function Peashooter() {
   }
 
   const handleAnimationIndexChange = (index: number) => {
-    const sprite = spriteUsed.get()
-    const animPlayer = animPlayerUsed.get()
-    const projectilesContainer = projectilesContainerUsed.get()
-
     if (animPlayer.currentAnim === 'shoot' && index === 2) {
       projectilesContainer.addChild(
         <Pea position={sprite.globalPosition.toAdded(new Vector2(10, 8))} />,
@@ -62,12 +53,12 @@ export function Peashooter() {
 
   return (
     <sprite
-      use={spriteUsed}
+      use={sprite}
       textureId='peashooter.idle'
       size={new Vector2(16, 16)}
       onStart={handleStart}>
       <animation-player
-        use={animPlayerUsed}
+        use={animPlayer}
         onAnimationEnd={handleAnimationEnd}
         onAnimationIndexChange={handleAnimationIndexChange}
       />
