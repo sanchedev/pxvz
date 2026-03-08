@@ -1,6 +1,6 @@
 type Fun<T extends any[]> = (...args: T) => void
 
-export class Event<T extends any[]> {
+export class Event<T extends any[], const K extends string> {
   /**
    * The **`on`** method subscribes the `cb` to this `Event`.
    * @param cb Callback
@@ -35,4 +35,9 @@ export class Event<T extends any[]> {
   }
 
   #list: Fun<T>[] = []
+
+  constructor(
+    public baseName: K,
+    public exampleFun: Fun<T>,
+  ) {}
 }

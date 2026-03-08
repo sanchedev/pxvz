@@ -164,5 +164,5 @@ export class Game {
   /**
    * Detects whether the `Game` is **blured**
    */
-  static blured = new Event<[]>()
+  static blured = new Event('blur', () => {})
 }

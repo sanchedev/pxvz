@@ -28,19 +28,25 @@ export class AnimationPlayer extends Node {
   /**
    * Detects whether `currentAnim` **change**
    */
-  animationChanged = new Event<[newAnim: string, oldAnim: string | null]>()
+  animationChanged = new Event(
+    'animationChange',
+    (newAnim: string, oldAnim: string | null) => {},
+  )
   /**
    * Detects whether `stop` is **called**
    */
-  animationStopped = new Event<[anim: string]>()
+  animationStopped = new Event('animationStop', (anim: string) => {})
   /**
    * Detects whether this `index` **change**
    */
-  animationIndexChanged = new Event<[index: number]>()
+  animationIndexChanged = new Event(
+    'animationIndexChange',
+    (index: number) => {},
+  )
   /**
    * Detects whether the current animation **end**
    */
-  animationEnded = new Event<[anim: string]>()
+  animationEnded = new Event('animationEnd', (anim: string) => {})
 
   /**
    * The **`add`** method adds an animation with a key.

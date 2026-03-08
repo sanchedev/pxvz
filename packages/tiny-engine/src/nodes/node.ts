@@ -429,23 +429,23 @@ export class Node {
   /**
    * Detects whether `zIndex` **change**
    */
-  zIndexChanged = new Event<[zIndex: number]>()
+  zIndexChanged = new Event('zIndexChange', (zIndex: number) => {})
   /**
    * Detects whether this `Node` **start**
    */
-  started = new Event<[]>()
+  started = new Event('start', () => {})
   /**
    * Detects whether this `Node` **is drawing**
    */
-  drawed = new Event<[delta: number]>()
+  drawed = new Event('draw', (delta: number) => {})
   /**
    * Detects whether this `Node` **is updating**
    */
-  updated = new Event<[delta: number]>()
+  updated = new Event('update', (delta: number) => {})
   /**
    * Detects whether this `Node` is **destroyed**
    */
-  destroyed = new Event<[]>()
+  destroyed = new Event('destroy', () => {})
 
   start(): void {
     for (const child of this._children) {
