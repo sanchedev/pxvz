@@ -1,6 +1,6 @@
 import { InvalidUseAttributeError } from '../../errors/jsx.js'
 import { Event } from '../../events/event.js'
-import { NODE_REF, type NodeSetter } from '../../hooks/node.js'
+import { NODE_REF, type NodeSetter } from '../../hooks/use-node.js'
 import type { Node } from '../../nodes/node.js'
 import { getNode, Nodes } from '../../nodes/registry.js'
 import { type NodeTypes, type NodesOptions } from '../../nodes/types.js'
