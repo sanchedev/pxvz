@@ -513,11 +513,22 @@ export class Node {
     q.splice(index, 1)
 
     this.isDestroyed = true
+    this.cleanEvents()
 
     this.destroyed.emit()
     for (const node of this._children) {
       node.destroy()
     }
+  }
+
+  /**
+   * The **`cleanEvents`** method cleans all events.
+   */
+  cleanEvents() {
+    this.started.clean()
+    this.drawed.clean()
+    this.updated.clean()
+    this.destroyed.clean()
   }
 }
 

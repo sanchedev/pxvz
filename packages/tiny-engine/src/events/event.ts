@@ -33,6 +33,13 @@ export class Event<T extends any[], const K extends string> {
   emit(...params: T) {
     this.#list.forEach((cb) => cb(...params))
   }
+  /**
+   * The **`clean`** method unsubscribe all listeners of this `Event`.
+   * @param cb Callback
+   */
+  clean() {
+    this.#list.length = 0
+  }
 
   #list: Fun<T>[] = []
 

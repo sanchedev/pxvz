@@ -154,6 +154,14 @@ export class AnimationPlayer extends Node {
     this.#updateAnim(delta)
     super.update(delta)
   }
+
+  cleanEvents(): void {
+    this.animationChanged.clean()
+    this.animationEnded.clean()
+    this.animationIndexChanged.clean()
+    this.animationStopped.clean()
+    super.cleanEvents()
+  }
 }
 
 Nodes['animation-player'] = AnimationPlayer
