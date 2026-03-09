@@ -1,4 +1,5 @@
 import { jsx } from '../jsx-runtime.js'
+import { getNodeFromTinyNode } from '../jsx/tiny-node.js'
 import type { TinyType } from '../jsx/types.js'
 import { Node } from '../nodes/node.js'
 
@@ -34,6 +35,6 @@ export class Scene {
 
     if (node instanceof Node) return node
 
-    return jsx(node, {})
+    return getNodeFromTinyNode(jsx(node, {}))
   }
 }

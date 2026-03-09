@@ -1,4 +1,5 @@
 import {
+  Collider,
   GameConfig,
   loadTexture,
   useNode,
@@ -26,12 +27,18 @@ export function Pea({ position }: PeaProps) {
     }
   }
 
+  const handleColliderEnter = (collider: Collider) => {
+    console.log(collider)
+  }
+
   return (
-    <sprite
-      use={pea}
-      textureId='pea'
-      position={peaPos}
-      onUpdate={handleUpdate}
-    />
+    <sprite use={pea} textureId='pea' position={peaPos} onUpdate={handleUpdate}>
+      <collider
+        size={new Vector2(4, 4)}
+        layer={['projectile']}
+        mesh={['zombie']}
+        onColliderEnter={handleColliderEnter}
+      />
+    </sprite>
   )
 }

@@ -80,8 +80,9 @@ export type NodeElement<T extends Node = Node> = {
 } & RecordOfEvents<T>
 
 export type NodeIntrinsicElements = {
-  [P in keyof NodeTypes]: WithChildren<NodesOptions[P]> &
-    NodeElement<NodeTypes[P]>
+  [P in keyof NodeTypes]: WithChildren<
+    NodesOptions[P] & NodeElement<NodeTypes[P]>
+  >
 }
 
 // Event
