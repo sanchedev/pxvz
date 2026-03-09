@@ -4,6 +4,7 @@ import {
   Vector2,
   useNode,
   useSpawn,
+  useEvent,
 } from 'tiny-engine'
 
 import { Pea } from '../projectiles/pea.js'
@@ -18,6 +19,16 @@ await loadTexture(
 )
 
 export function Peashooter() {
+  const { animPlayer, sprite } = usePeashooter()
+
+  return (
+    <sprite use={sprite} textureId='peashooter.idle' size={new Vector2(16, 16)}>
+      <animation-player use={animPlayer} />
+    </sprite>
+  )
+}
+
+function usePeashooter() {
   const sprite = useNode<'sprite'>()
   const animPlayer = useNode<'animation-player'>()
   const projectilesContainer = useNode({
@@ -27,49 +38,46 @@ export function Peashooter() {
 
   const spawnPea = useSpawn(projectilesContainer)
 
-  const handleStart = () => {
-    animPlayer
-      .add('idle', {
-        fps: 4,
-        keyframes: kfFromSpriteSheet(sprite, 'peashooter.idle', 4),
-        loop: false,
-      })
-      .add('shoot', {
-        fps: 4,
-        keyframes: kfFromSpriteSheet(sprite, 'peashooter.shoot', 4),
-        loop: false,
-      })
+  useEvent(
+    () => {
+      animPlayer
+        .add('idle', {
+          fps: 4,
+          keyframes: kfFromSpriteSheet(sprite, 'peashooter.idle', 4),
+          loop: false,
+        })
+        .add('shoot', {
+          fps: 4,
+          keyframes: kfFromSpriteSheet(sprite, 'peashooter.shoot', 4),
+          loop: false,
+        })
 
-    animPlayer.play('idle')
-  }
-
-  const handleAnimationEnd = (anim: string) => {
-    if (anim === 'idle') {
-      animPlayer.play('shoot')
-    } else {
       animPlayer.play('idle')
-    }
-  }
-
-  const handleAnimationIndexChange = (index: number) => {
-    if (animPlayer.currentAnim === 'shoot' && index === 2) {
-      spawnPea(
-        <Pea position={sprite.globalPosition.toAdded(new Vector2(10, 8))} />,
-      )
-    }
-  }
-
-  return (
-    <sprite
-      use={sprite}
-      textureId='peashooter.idle'
-      size={new Vector2(16, 16)}
-      onStart={handleStart}>
-      <animation-player
-        use={animPlayer}
-        onAnimationEnd={handleAnimationEnd}
-        onAnimationIndexChange={handleAnimationIndexChange}
-      />
-    </sprite>
+    },
+    () => sprite.started,
   )
+
+  useEvent(
+    (anim) => {
+      if (anim === 'idle') {
+        animPlayer.play('shoot')
+      } else {
+        animPlayer.play('idle')
+      }
+    },
+    () => animPlayer.animationEnded,
+  )
+
+  useEvent(
+    (index) => {
+      if (animPlayer.currentAnim === 'shoot' && index === 2) {
+        spawnPea(
+          <Pea position={sprite.globalPosition.toAdded(new Vector2(10, 8))} />,
+        )
+      }
+    },
+    () => animPlayer.animationIndexChanged,
+  )
+
+  return { sprite, animPlayer }
 }
