@@ -1,78 +1,48 @@
 import { Fragment } from '../jsx/components/fragment.js'
 import type { Tiny } from '../jsx/types.js'
-import { currentContext, pushEffect } from './context.js'
-
-const contexts: Map<number, ContextCreated<any>> = new Map()
+import { currentContext } from './context.js'
 
 export function createContext<T>(defaultValue: T) {
   return new ContextCreated<T>(defaultValue)
 }
 
-export function useContext<T>(
-  contextCreated: ContextCreated<T>,
-): Context<T> | undefined {
-  let context: Context<T> | {} = {}
+export function useContext<T>(contextCreated: ContextCreated<T>): T {
+  let context: T | undefined
 
-  pushEffect('useContext', (_, currentContext) => {
-    context =
-      currentContext.find((h) => h.context?.id === contextCreated.__id)
-        ?.context ?? {}
-  })
+  for (let i = currentContext.length - 1; i >= 0; i--) {
+    const ctx = currentContext[i]!
 
-  return new Proxy<Context<T>>(context as Context<T>, {
-    set() {
-      return false
-    },
-    get(_, key) {
-      if (context == null) return undefined
+    if (ctx.context?.id !== contextCreated.__id) continue
+    context = ctx.context.value
+  }
 
-      if (key === 'get' || key === 'set')
-        return (context as Context<T>)[key].bind(context as Context<T>)
-      return undefined
-    },
-  })
+  return context ?? contextCreated.defaultValue
 }
 
 class ContextCreated<T> {
   __id: number
-  #defaultValue: T
+  defaultValue: T
 
   constructor(defaultValue: T) {
-    this.#defaultValue = defaultValue
+    this.defaultValue = defaultValue
     this.__id = genContextId()
-    contexts.set(this.__id, this)
   }
 
-  Provider = (props: Tiny.WithChildren) => {
-    const def = this.#defaultValue
+  Provider = (props: Tiny.WithChildren<{ value: T }>) => {
     const ctx = currentContext.at(-1)
     if (ctx) {
-      ctx.context = new Context(def, this.__id)
+      ctx.context = { id: this.__id, value: props.value }
     }
     return Fragment(props)
   }
 }
 
-export class Context<T> {
-  #value: T
-
-  set(value: T) {
-    this.#value = value
-  }
-  get() {
-    return this.#value
-  }
-
-  constructor(
-    defaultValue: T,
-    public id: number,
-  ) {
-    this.#value = defaultValue
-  }
+export interface Context<T> {
+  id: number
+  value: T
 }
 
+let counter = 0
 function genContextId() {
-  const key = Math.max(0, ...contexts.keys()) + 1
-
-  return key
+  return ++counter
 }
