@@ -13,6 +13,12 @@ import {
 } from '../components/scene.js'
 import { renderToNodes } from './to-nodes.js'
 import { Node } from '../../nodes/node.js'
+import {
+  InvalidGameElementError,
+  InvalidSceneComponentError,
+  MissingGameRootError,
+  MissingSceneError,
+} from '../../errors/jsx.js'
 
 /** The **`createGame`** function creates the game and returns an object with control methods that can be used to play, pause the game, change the scene, etc...
  *
@@ -31,14 +37,12 @@ import { Node } from '../../nodes/node.js'
  */
 export function createGame(jsx: Tiny.Node, root: HTMLElement): GameControls {
   if (root == null) {
-    // TODO: Make a new Error
-    throw new Error('Root does not exist.')
+    throw new MissingGameRootError()
   }
 
   const jsxEl = getTinyElementFromTinyNode(jsx)
   if (jsxEl == null || jsxEl.type !== Game) {
-    // TODO: Make a new Error
-    throw new Error('Game can not works without <Game /> component.')
+    throw new InvalidGameElementError()
   }
   const { children, defaultScene, ...setupOptions } = jsxEl.props as GameOptions
 
@@ -52,8 +56,7 @@ export function createGame(jsx: Tiny.Node, root: HTMLElement): GameControls {
   for (const scene of scenes) {
     const sceneEl = getTinyElementFromTinyNode(scene)
     if (sceneEl?.type !== Scene) {
-      // TODO: Make a new Error
-      throw new Error('Scene can not works without <Scene /> component.')
+      throw new MissingSceneError()
     }
 
     const { name, component } = sceneEl.props as SceneOptions
@@ -121,8 +124,7 @@ async function SceneComponentToNode(component: SceneComponent): Promise<Node> {
   }
 
   if (nodesRendered.length !== 1 || !(nodesRendered[0] instanceof Node)) {
-    // TODO: Make a new Error
-    throw new Error('A Scene should be a Component to returns a Node.')
+    throw new InvalidSceneComponentError()
   }
   return nodesRendered[0]
 }

@@ -36,3 +36,29 @@ export class InvalidUseAttributeError extends JSXError {
     )
   }
 }
+
+export class MissingGameRootError extends JSXError {
+  constructor() {
+    super('createGame requires a valid "root" HTMLElement.')
+  }
+}
+
+export class InvalidGameElementError extends JSXError {
+  constructor() {
+    super('The jsx passed to createGame must be a Game component.')
+  }
+}
+
+export class MissingSceneError extends JSXError {
+  constructor() {
+    super('The Game component requires Scene components as children.')
+  }
+}
+
+export class InvalidSceneComponentError extends JSXError {
+  constructor() {
+    super(
+      'Scene `component` must be a sync or async function returning a Node.',
+    )
+  }
+}
