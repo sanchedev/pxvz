@@ -1,5 +1,5 @@
 import { Collider, GameConfig, loadTexture, Vector2 } from 'tiny-engine'
-import { useNode, useSignal } from 'tiny-engine/hooks'
+import { useNode, useSignal, useGame } from 'tiny-engine/hooks'
 
 await loadTexture('pea', 'assets/sprites/projectiles/pea.png')
 
@@ -12,6 +12,7 @@ interface PeaProps {
 export function Pea({ position }: PeaProps) {
   const pea = useNode('sprite')
   const peaPos = useSignal(position)
+  const game = useGame()
 
   const handleUpdate = (delta: number) => {
     if (pea.globalPosition.x <= GameConfig.width) {
@@ -22,7 +23,7 @@ export function Pea({ position }: PeaProps) {
   }
 
   const handleColliderEnter = (collider: Collider) => {
-    console.log(collider)
+    game.pause()
   }
 
   return (

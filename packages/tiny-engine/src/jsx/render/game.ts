@@ -81,7 +81,7 @@ export function createGame(jsx: Tiny.Node, root: HTMLElement): GameControls {
   }
 }
 
-interface GameControls {
+export interface GameControls {
   /**
    * The **`play`** method starts the game.
    */
