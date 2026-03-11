@@ -518,9 +518,9 @@ export class Node {
     q.splice(index, 1)
 
     this.isDestroyed = true
-    this.cleanEvents()
-
     this.destroyed.emit()
+
+    this.cleanEvents()
     for (const node of this._children) {
       node.destroy()
     }
