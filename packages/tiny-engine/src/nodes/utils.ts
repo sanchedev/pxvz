@@ -3,7 +3,7 @@ import type { Node } from './node.js'
 import { Nodes } from './registry.js'
 import type { NodeInstances, NodeName } from './types.js'
 
-const nodeNamesMap = new Map<Node, keyof typeof Nodes>()
+const nodeNamesMap = new Map<Node, NodeName>()
 
 // TODO: Arregla esto añadiendo un map para cache y usar object get property of
 export function getNodeName<T extends NodeName>(node: NodeInstances[T]): T {

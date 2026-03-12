@@ -7,12 +7,14 @@ import type {
 import type { View, viewNodeName } from './ui/view.js'
 import type { Text, textNodeName } from './ui/text.js'
 import type { Collider, colliderNodeName } from './collider.js'
+import type { RayCast, rayCastNodeName } from './ray-cast.js'
 
 export interface NodeClasses {
   [nodeName]: typeof Node
   [spriteNodeName]: typeof Sprite
   [animationPlayerNodeName]: typeof AnimationPlayer
   [colliderNodeName]: typeof Collider
+  [rayCastNodeName]: typeof RayCast
   // ui
   [viewNodeName]: typeof View
   [textNodeName]: typeof Text

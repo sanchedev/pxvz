@@ -1,12 +1,12 @@
-import { Peashooter } from '../plants/peashooter.js'
-import { Zombie } from '../zombies/zombie.js'
+import { loadTexture } from 'tiny-engine'
+import { Board } from '../components/board.js'
+
+await loadTexture('bg-day', '/assets/sprites/backgrounds/day.png')
 
 export default function Test() {
   return (
-    <node>
-      <node id='projectiles' />
-      <Peashooter />
-      <Zombie />
-    </node>
+    <sprite textureId='bg-day'>
+      <Board />
+    </sprite>
   )
 }

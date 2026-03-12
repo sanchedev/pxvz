@@ -1,7 +1,14 @@
-import { loadTexture, kfFromSpriteSheet, Vector2 } from 'tiny-engine'
-import { useEvent, useNode, useSpawn } from 'tiny-engine/hooks'
+import {
+  loadTexture,
+  kfFromSpriteSheet,
+  Vector2,
+  GameConfig,
+} from 'tiny-engine'
+import { useContext, useEvent, useNode } from 'tiny-engine/hooks'
 
 import { Pea } from '../projectiles/pea.js'
+import { RowCtx } from '../../contexts/row.js'
+import type { PlantProps } from '../../types.js'
 
 await loadTexture(
   'peashooter.idle',
@@ -12,30 +19,36 @@ await loadTexture(
   'assets/sprites/plants/peashooter/shoot.png',
 )
 
-export function Peashooter() {
-  const { animPlayer, sprite } = usePeashooter()
+interface PeashooterProps extends PlantProps {}
+
+export function Peashooter({ position }: PeashooterProps) {
+  const { animPlayer, sprite, rayCast } = usePeashooter(position)
 
   return (
-    <entity>
+    <entity position={position}>
       <sprite
         use={sprite}
         textureId='peashooter.idle'
         size={new Vector2(16, 16)}>
+        <ray-cast
+          use={rayCast}
+          position={new Vector2(8, 10)}
+          length={0}
+          mesh={['zombies']}
+        />
         <animation-player use={animPlayer} />
       </sprite>
     </entity>
   )
 }
 
-function usePeashooter() {
+function usePeashooter(position: Vector2) {
   const sprite = useNode('sprite')
   const animPlayer = useNode('animation-player')
-  const projectilesContainer = useNode({
-    nodeType: 'node',
-    path: '/projectiles',
-  })
+  const rayCast = useNode('ray-cast')
+  const { spawnProjectile } = useContext(RowCtx)
 
-  const spawnPea = useSpawn(projectilesContainer)
+  let shoot = false
 
   useEvent(
     () => {
@@ -52,13 +65,14 @@ function usePeashooter() {
         })
 
       animPlayer.play('idle')
+      rayCast.length = GameConfig.width - rayCast.globalPosition.x
     },
     () => sprite.started,
   )
 
   useEvent(
-    (anim) => {
-      if (anim === 'idle') {
+    (_) => {
+      if (shoot) {
         animPlayer.play('shoot')
       } else {
         animPlayer.play('idle')
@@ -70,13 +84,24 @@ function usePeashooter() {
   useEvent(
     (index) => {
       if (animPlayer.currentAnim === 'shoot' && index === 2) {
-        spawnPea(
-          <Pea position={sprite.globalPosition.toAdded(new Vector2(10, 8))} />,
-        )
+        spawnProjectile(<Pea position={position.toAdded(new Vector2(10, 8))} />)
       }
     },
     () => animPlayer.animationIndexChanged,
   )
 
-  return { sprite, animPlayer }
+  useEvent(
+    () => {
+      shoot = true
+    },
+    () => rayCast.colliderEntered,
+  )
+  useEvent(
+    () => {
+      shoot = false
+    },
+    () => rayCast.colliderExited,
+  )
+
+  return { sprite, animPlayer, rayCast }
 }

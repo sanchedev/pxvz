@@ -5,6 +5,7 @@ export {
   type AnimationPlayerOptions,
 } from './animation-player.js'
 export { Collider, type ColliderOptions } from './collider.js'
+export { RayCast, type RayCastOptions } from './ray-cast.js'
 
 export * from './ui/index.js'
 

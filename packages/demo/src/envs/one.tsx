@@ -1,4 +1,4 @@
-import { Peashooter } from '../plants/peashooter.js'
+import { Peashooter } from '../components/plants/peashooter.js'
 import { Zombie } from '../zombies/zombie.js'
 
 export function OneEnv() {

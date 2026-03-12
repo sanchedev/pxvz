@@ -8,8 +8,32 @@ import { Nodes } from './registry.js'
 export const colliderNodeName = 'collider'
 
 export interface ColliderOptions extends NodeOptions {
+  /**
+   * The **`size`** property of `Collider` is used to define the width and height of the collider. It is a `Vector2` object that contains the `x` and `y` values representing the width and height, respectively. The `size` property is essential for collision detection, as it determines the area that the collider occupies in the game world.
+   *
+   * @example
+   * ```tsx
+   * <collider size={new Vector2(10, 10)} ... />
+   * ```
+   */
   size: Vector2
+  /**
+   * The **`layer`** property of `Collider` is used to define the layers that the collider belongs to. It is an array of strings, where each string represents a layer name.
+   *
+   * @example
+   * ```tsx
+   * <collider size={...} layer={['player', 'character']} ... />
+   * ```
+   */
   layer: string[]
+  /**
+   * The **`mesh`** property of `Collider` is used to define the layers that the collider can interact with. It is an array of strings, where each string represents a layer name. The `mesh` property is essential for collision detection, as it determines which layers the collider can collide with.
+   *
+   * @example
+   * ```tsx
+   * <collider size={...} layer={...} mesh={['enemy', 'obstacle']} ... />
+   * ```
+   */
   mesh: string[]
 }
 
@@ -59,6 +83,8 @@ export class Collider extends Node {
   }
 
   update(delta: number): void {
+    const oldColliders = new Set(this.#colliders)
+
     for (const collider of colliders) {
       if (collider === this) continue
       if (this.mesh.every((m) => !collider.layer.includes(m))) continue
@@ -68,23 +94,22 @@ export class Collider extends Node {
       const from2 = collider.globalPosition
       const to2 = from2.toAdded(collider.size)
 
-      if (detectCollision(from1, to1, from2, to2)) {
-        if (!this.#colliders.has(collider)) {
+      const isDetected = detectCollision(from1, to1, from2, to2)
+      const wasDetected = oldColliders.has(collider)
+
+      if (!wasDetected) {
+        if (isDetected) {
           this.#colliders.add(collider)
-          collider.destroyed.on(() => {
-            if (this.#colliders.has(collider)) {
-              this.#colliders.delete(collider)
-            }
-          })
           this.colliderEntered.emit(collider)
         }
         this.collided.emit(collider)
-      } else {
-        if (this.#colliders.has(collider)) {
-          this.colliderExited.emit(collider)
-        }
+        continue
       }
+
+      oldColliders.delete(collider)
+      if (!isDetected) this.colliderExited.emit(collider)
     }
+
     super.update(delta)
   }
 
@@ -96,15 +121,22 @@ export class Collider extends Node {
 
 Nodes.collider = Collider
 
-const colliders = new Set<Collider>()
+export const colliders = new Set<Collider>()
 
-function detectCollision(
+export function detectCollision(
   from1: Vector2,
   to1: Vector2,
   from2: Vector2,
   to2: Vector2,
 ) {
-  return (
-    from1.x < to2.x && to1.x > from2.x && from1.y < to2.y && to1.y > from2.y
-  )
+  const from1X = Math.min(from1.x, to1.x)
+  const from1Y = Math.min(from1.y, to1.y)
+  const to1X = from1X === from1.x ? to1.x : from1.x
+  const to1Y = from1Y === from1.y ? to1.y : from1.y
+  const from2X = Math.min(from2.x, to2.x)
+  const from2Y = Math.min(from2.y, to2.y)
+  const to2X = from2X === from2.x ? to2.x : from2.x
+  const to2Y = from2Y === from2.y ? to2.y : from2.y
+
+  return from1X < to2X && to1X > from2X && from1Y < to2Y && to1Y > from2Y
 }
