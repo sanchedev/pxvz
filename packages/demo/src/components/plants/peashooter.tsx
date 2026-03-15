@@ -1,14 +1,10 @@
-import {
-  loadTexture,
-  kfFromSpriteSheet,
-  Vector2,
-  GameConfig,
-} from 'tiny-engine'
+import { loadTexture, kfFromSpriteSheet, Vector2 } from 'tiny-engine'
 import { useContext, useEvent, useNode } from 'tiny-engine/hooks'
 
 import { Pea } from '../projectiles/pea.js'
-import { RowCtx } from '../../contexts/row.js'
+import { RowCtx, RowSpawnersCtx } from '../../contexts/row.js'
 import type { PlantProps } from '../../types.js'
+import { BoardCtx } from '../../contexts/board.js'
 
 await loadTexture(
   'peashooter.idle',
@@ -21,32 +17,49 @@ await loadTexture(
 
 interface PeashooterProps extends PlantProps {}
 
-export function Peashooter({ position }: PeashooterProps) {
-  const { animPlayer, sprite, rayCast } = usePeashooter(position)
+export function Peashooter({ cellPosition }: PeashooterProps) {
+  const { plant, animPlayer, sprite, rayCast } = usePeashooter(cellPosition)
+  const { zombiesLayer } = useContext(RowCtx)
 
   return (
-    <entity position={position}>
+    <plant use={plant} health={30}>
       <sprite
         use={sprite}
         textureId='peashooter.idle'
-        size={new Vector2(16, 16)}>
-        <ray-cast
-          use={rayCast}
-          position={new Vector2(8, 10)}
-          length={0}
-          mesh={['zombies']}
-        />
-        <animation-player use={animPlayer} />
-      </sprite>
-    </entity>
+        size={new Vector2(16, 16)}
+      />
+      <ray-cast
+        use={rayCast}
+        position={new Vector2(8, 10)}
+        length={0}
+        mesh={[zombiesLayer]}
+      />
+      <animation-player use={animPlayer} />
+    </plant>
   )
 }
 
-function usePeashooter(position: Vector2) {
+function usePlant(cellPosition: Vector2) {
+  const plant = useNode('plant')
+  const board = useContext(BoardCtx)
+
+  useEvent(
+    () => {
+      plant.position = cellPosition.toMultiplied(board.cellSize)
+    },
+    () => plant.started,
+  )
+
+  return { plant }
+}
+
+function usePeashooter(cellPosition: Vector2) {
+  const { plant } = usePlant(cellPosition)
   const sprite = useNode('sprite')
   const animPlayer = useNode('animation-player')
   const rayCast = useNode('ray-cast')
-  const { spawnProjectile } = useContext(RowCtx)
+  const boardContext = useContext(BoardCtx)
+  const rowContext = useContext(RowSpawnersCtx)
 
   let shoot = false
 
@@ -65,9 +78,12 @@ function usePeashooter(position: Vector2) {
         })
 
       animPlayer.play('idle')
-      rayCast.length = GameConfig.width - rayCast.globalPosition.x
+
+      rayCast.length =
+        (boardContext.cellsCount.x - cellPosition.x) * boardContext.cellSize.x -
+        rayCast.position.x
     },
-    () => sprite.started,
+    () => plant.started,
   )
 
   useEvent(
@@ -84,7 +100,12 @@ function usePeashooter(position: Vector2) {
   useEvent(
     (index) => {
       if (animPlayer.currentAnim === 'shoot' && index === 2) {
-        spawnProjectile(<Pea position={position.toAdded(new Vector2(10, 8))} />)
+        rowContext.spawnProjectile(
+          <Pea
+            position={cellPosition.toAdded(new Vector2(10, 8))}
+            {...{ boardContext, rowContext }}
+          />,
+        )
       }
     },
     () => animPlayer.animationIndexChanged,
@@ -103,5 +124,5 @@ function usePeashooter(position: Vector2) {
     () => rayCast.colliderExited,
   )
 
-  return { sprite, animPlayer, rayCast }
+  return { plant, sprite, animPlayer, rayCast }
 }
