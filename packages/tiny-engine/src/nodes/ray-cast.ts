@@ -37,7 +37,7 @@ export class RayCast extends Node {
     super(options)
 
     this.length = options.length
-    this.mesh = options.mesh
+    this.mesh = Array.from(new Set(options.mesh))
   }
 
   #collider: Collider | null = null
@@ -94,8 +94,11 @@ export class RayCast extends Node {
 
   update(delta: number): void {
     let nearest: { collider: Collider; pos: Vector2 } | undefined
+    const collidersByLayer = new Set(
+      ...this.mesh.flatMap((n) => colliders.get(n) ?? []),
+    )
 
-    for (const collider of colliders) {
+    for (const collider of collidersByLayer) {
       if (this.mesh.every((m) => !collider.layer.includes(m))) continue
 
       const from1 = this.globalPosition

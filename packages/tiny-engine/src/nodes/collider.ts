@@ -42,12 +42,14 @@ export class Collider extends Node {
   layer: string[] = []
   mesh: string[] = []
 
+  #lastLayer: Set<string> = new Set()
+
   constructor(options: ColliderOptions) {
     super(options)
 
     this.size = options.size
-    this.layer = options.layer
-    this.mesh = options.mesh
+    this.layer = Array.from(new Set(options.layer))
+    this.mesh = Array.from(new Set(options.mesh))
   }
 
   #colliders = new Set<Collider>()
@@ -57,8 +59,32 @@ export class Collider extends Node {
   collided = new Event('collide', (collider: Collider) => {})
   colliderExited = new Event('colliderExit', (collider: Collider) => {})
 
+  #reloadCollider(forced?: string[]) {
+    const currentLayer = new Set(forced ?? this.layer)
+    if (
+      [...currentLayer].every((layerStr) => this.#lastLayer.has(layerStr)) &&
+      currentLayer.size === this.#lastLayer.size
+    )
+      return
+
+    for (const layerStr of this.#lastLayer) {
+      if (currentLayer.has(layerStr)) continue
+      colliders.get(layerStr)?.delete(this)
+    }
+
+    for (const layerStr of currentLayer) {
+      if (this.#lastLayer.has(layerStr)) continue
+      const collidersByLayer = colliders.get(layerStr) ?? new Set()
+      collidersByLayer.add(this)
+
+      colliders.set(layerStr, collidersByLayer)
+    }
+
+    this.#lastLayer = currentLayer
+  }
+
   start(): void {
-    colliders.add(this)
+    this.#reloadCollider()
     super.start()
   }
 
@@ -83,9 +109,14 @@ export class Collider extends Node {
   }
 
   update(delta: number): void {
-    const oldColliders = new Set(this.#colliders)
+    this.#reloadCollider()
 
-    for (const collider of colliders) {
+    const oldColliders = new Set(this.#colliders)
+    const collidersByLayer = new Set(
+      ...this.mesh.flatMap((n) => colliders.get(n) ?? []),
+    )
+
+    for (const collider of collidersByLayer) {
       if (collider === this) continue
       if (this.mesh.every((m) => !collider.layer.includes(m))) continue
 
@@ -114,14 +145,14 @@ export class Collider extends Node {
   }
 
   destroy(): void {
-    colliders.delete(this)
+    this.#reloadCollider([])
     super.destroy()
   }
 }
 
 Nodes.collider = Collider
 
-export const colliders = new Set<Collider>()
+export const colliders = new Map<string, Set<Collider>>()
 
 export function detectCollision(
   from1: Vector2,
