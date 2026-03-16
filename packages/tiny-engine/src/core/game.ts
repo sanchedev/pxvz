@@ -72,16 +72,23 @@ export class Game {
       theme: options.theme ?? new Theme(),
     })
 
-    canvas.width = options.width
-    canvas.height = options.height
+    const width = options.width
+    const height = options.height
 
-    options.root.style.setProperty('--width', canvas.width.toString())
-    options.root.style.setProperty('--height', canvas.height.toString())
+    canvas.width = width
+    canvas.height = height
 
-    const { width: w, height: h, ratio: r } = getDPRFromCtx(ctx)
-    canvas.width = w
-    canvas.height = h
-    ctx.scale(r, r)
+    options.root.style.setProperty('--width', width.toString())
+    options.root.style.setProperty('--height', height.toString())
+
+    let ratio = 1
+    const handleResize = () => {
+      ratio = getDPRFromCtx(ctx, width, height, ratio)
+      ctx.imageSmoothingEnabled = false
+    }
+
+    window.addEventListener('resize', handleResize)
+    handleResize()
 
     ctx.imageSmoothingEnabled = false
 
