@@ -163,4 +163,14 @@ export class Vector2 {
 
     return vector2
   }
+
+  normalize() {
+    const length = Math.sqrt(this.x * this.x + this.y * this.y)
+    if (length > 0) {
+      this.x /= length
+      this.y /= length
+    }
+
+    return this
+  }
 }
