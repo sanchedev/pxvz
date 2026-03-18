@@ -5,6 +5,8 @@ import { getDPRFromCtx } from '../utils/dpr.js'
 import { Event } from '../events/event.js'
 import { Context2DNotSupportedError } from '../errors/env.js'
 import { EngineNotSetupError } from '../errors/lifecycle.js'
+import { Input } from '../input/input.js'
+import { Vector2 } from '../math/vector2.js'
 
 interface SetupOptions {
   /** The **`width`** of the canvas. */
@@ -93,6 +95,8 @@ export class Game {
     ctx.imageSmoothingEnabled = false
 
     this.sceneManager.setScene(null)
+
+    Game.input = new Input(canvas, new Vector2(width, height))
   }
 
   /**
@@ -158,17 +162,21 @@ export class Game {
   static loop(delta: number) {
     const node = this.sceneManager.currentNode
 
-    if (node == null) return
+    if (node) {
+      GameConfig.ctx.clearRect(0, 0, GameConfig.width, GameConfig.height)
 
-    GameConfig.ctx.clearRect(0, 0, GameConfig.width, GameConfig.height)
+      if (!node.isStarted) {
+        node.start()
+      }
 
-    if (!node.isStarted) {
-      node.start()
+      node.update(delta)
+      node.draw(delta)
     }
 
-    node.update(delta)
-    node.draw(delta)
+    Game.input.update()
   }
+
+  static input: Input
 
   /**
    * Detects whether the `Game` is **blured**
