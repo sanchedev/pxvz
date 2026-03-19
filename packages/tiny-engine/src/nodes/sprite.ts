@@ -1,5 +1,5 @@
 import { getTexture, type Texture } from '../assets/texture.js'
-import type { Vector2 } from '../math/vector2.js'
+import { Vector2 } from '../math/vector2.js'
 import { Signal } from '../reactivity/signal.js'
 import { Node, type NodeOptions } from './node.js'
 import { Nodes } from './registry.js'
@@ -63,6 +63,8 @@ export interface SpriteOptions extends NodeOptions {
    * ```
    */
   size?: Vector2 | Signal<Vector2>
+  flipX?: boolean | Signal<boolean>
+  flipY?: boolean | Signal<boolean>
 }
 
 /** Default **`id`** for `Sprite` and it is used for jsx tags */
@@ -112,6 +114,9 @@ export class Sprite extends Node {
    * ```
    */
   size?: Vector2 | undefined
+
+  flipX = false
+  flipY = false
 
   /**
    * The **`textureId`** property of `Sprite` represents the sprite's texture.
@@ -164,7 +169,7 @@ export class Sprite extends Node {
     if (options.margin != null) {
       if (options.margin instanceof Signal) {
         this.margin = options.margin.value
-        options.margin.subscribe((val) => (options.margin = val))
+        options.margin.subscribe((val) => (this.margin = val))
       } else {
         this.margin = options.margin
       }
@@ -172,7 +177,7 @@ export class Sprite extends Node {
     if (options.size != null) {
       if (options.size instanceof Signal) {
         this.size = options.size.value
-        options.size.subscribe((val) => (options.size = val))
+        options.size.subscribe((val) => (this.size = val))
       } else {
         this.size = options.size
       }
@@ -180,9 +185,28 @@ export class Sprite extends Node {
     if (options.textureId != null) {
       if (options.textureId instanceof Signal) {
         this.textureId = options.textureId.value
-        options.textureId.subscribe((val) => (options.textureId = val))
+        options.textureId.subscribe((val) => (this.textureId = val))
       } else {
         this.textureId = options.textureId
+      }
+    }
+    if (options.flipX != null) {
+      console.log(options.flipX, 'options.flipX')
+      if (options.flipX instanceof Signal) {
+        this.flipX = options.flipX.value
+        console.log(this.flipX, 'flipX')
+        console.log(options.flipX.value, 'options.flipX.value')
+        options.flipX.subscribe((val) => (this.flipX = val))
+      } else {
+        this.flipX = options.flipX
+      }
+    }
+    if (options.flipY != null) {
+      if (options.flipY instanceof Signal) {
+        this.flipY = options.flipY.value
+        options.flipY.subscribe((val) => (this.flipY = val))
+      } else {
+        this.flipY = options.flipY
       }
     }
   }
@@ -200,6 +224,9 @@ export class Sprite extends Node {
       position: this.position,
       margin: this.margin,
       size: this.size,
+      resultSize: this.size?.toMultiplied(
+        new Vector2(this.flipX ? -1 : 1, this.flipY ? -1 : 1),
+      ),
     })
   }
 
