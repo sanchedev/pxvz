@@ -2,11 +2,13 @@ import { GameConfig } from '../core/game-config.js'
 import { Event } from '../events/event.js'
 import { Vector2 } from '../math/vector2.js'
 import { colliders, detectCollision, type Collider } from './collider.js'
-import { Node, type NodeOptions } from './node.js'
+import { Node, type NodeEvents, type NodeOptions } from './node.js'
 import { Nodes } from './registry.js'
 
-/** Default **`id`** for `Node` and it is used for jsx tags */
-export const rayCastNodeName = 'ray-cast'
+export interface RayCastEvents extends NodeEvents {
+  colliderEntered: Event<[Collider], 'colliderEnter'>
+  colliderExited: Event<[Collider], 'colliderExit'>
+}
 
 export interface RayCastOptions extends NodeOptions {
   /**
@@ -29,7 +31,10 @@ export interface RayCastOptions extends NodeOptions {
   mesh: string[]
 }
 
-export class RayCast extends Node {
+/** Default **`id`** for `Node` and it is used for jsx tags */
+export const rayCastNodeName = 'ray-cast'
+
+export class RayCast extends Node implements RayCastEvents {
   length: number
   mesh: string[]
 

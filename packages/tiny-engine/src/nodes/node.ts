@@ -13,6 +13,29 @@ import {
 import { getNodeName } from './utils.js'
 import { Nodes } from './registry.js'
 
+export interface NodeEvents {
+  /**
+   * Detects whether `zIndex` **change**
+   */
+  zIndexChanged: Event<[number], 'zIndexChange'>
+  /**
+   * Detects whether this `Node` **start**
+   */
+  started: Event<[], 'start'>
+  /**
+   * Detects whether this `Node` **is drawing**
+   */
+  drawed: Event<[number], 'draw'>
+  /**
+   * Detects whether this `Node` **is updating**
+   */
+  updated: Event<[number], 'update'>
+  /**
+   * Detects whether this `Node` is **destroyed**
+   */
+  destroyed: Event<[], 'destroy'>
+}
+
 export interface NodeOptions {
   /**
    * The read-only **`id`** property of `Node` represents the node's identifier.
@@ -115,7 +138,7 @@ export const nodeName = 'node'
 
 const idRegEx = /([a-zA-Z][a-zA-Z0-9-_]*)/g
 
-export class Node {
+export class Node implements NodeEvents {
   #id: string
   /**
    * The **`position`** property of a `Node`.
@@ -455,27 +478,13 @@ export class Node {
   }
 
   // Events
-  /**
-   * Detects whether `zIndex` **change**
-   */
   zIndexChanged = new Event('zIndexChange', (zIndex: number) => {})
-  /**
-   * Detects whether this `Node` **start**
-   */
   started = new Event('start', () => {})
-  /**
-   * Detects whether this `Node` **is drawing**
-   */
   drawed = new Event('draw', (delta: number) => {})
-  /**
-   * Detects whether this `Node` **is updating**
-   */
   updated = new Event('update', (delta: number) => {})
-  /**
-   * Detects whether this `Node` is **destroyed**
-   */
   destroyed = new Event('destroy', () => {})
 
+  // Lifecycle methods
   start(): void {
     for (const child of this._children) {
       this.#attachChild(child)
@@ -528,7 +537,7 @@ export class Node {
   }
 
   /**
-   * The **`cleanEvents`** method cleans all events.
+   * The **`cleanEvents`** method cleans all
    */
   cleanEvents() {
     this.started.clean()

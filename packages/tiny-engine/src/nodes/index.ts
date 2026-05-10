@@ -7,8 +7,6 @@ export {
 export { Collider, type ColliderOptions } from './collider.js'
 export { RayCast, type RayCastOptions } from './ray-cast.js'
 
-export * from './ui/index.js'
-
 export * from './types.js'
 export * from './registry.js'
 export * from './utils.js'

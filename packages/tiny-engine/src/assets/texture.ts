@@ -21,11 +21,11 @@ export class Texture {
    * @param options Texture draw options
    */
   draw(options: TextureDrawOptions) {
-    const width = options.size?.x ?? this.width
-    const height = options.size?.y ?? this.height
+    const width = options.sourceSize?.x ?? this.width
+    const height = options.sourceSize?.y ?? this.height
 
-    const rWidth = options.resultSize?.x ?? width
-    const rHeight = options.resultSize?.y ?? height
+    const rWidth = options.displaySize?.x ?? width
+    const rHeight = options.displaySize?.y ?? height
 
     const flipX = rWidth !== Math.abs(rWidth)
     const flipY = rHeight !== Math.abs(rHeight)
@@ -55,9 +55,9 @@ interface TextureDrawOptions {
   /** Position to draw */
   position: Vector2
   /** Size of the texture */
-  size?: Vector2 | undefined
+  sourceSize?: Vector2 | undefined
   /** Size of the result texture */
-  resultSize?: Vector2 | undefined
+  displaySize?: Vector2 | undefined
   /** Offset of the texture */
   margin?: Vector2 | undefined
 }

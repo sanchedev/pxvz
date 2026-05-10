@@ -3,12 +3,19 @@ import { Event } from '../events/event.js'
 import { Node, type NodeOptions } from './node.js'
 import { Nodes } from './registry.js'
 
+export interface AnimationPlayerEvents {
+  animationChanged: Event<[string, string | null], 'animationChange'>
+  animationStopped: Event<[string], 'animationStop'>
+  animationIndexChanged: Event<[number], 'animationIndexChange'>
+  animationEnded: Event<[string], 'animationEnd'>
+}
+
 export interface AnimationPlayerOptions extends NodeOptions {}
 
 /** Default **`id`** for `AnimationPlayer` and it is used for jsx tags */
 export const animationPlayerNodeName = 'animation-player'
 
-export class AnimationPlayer extends Node {
+export class AnimationPlayer extends Node implements AnimationPlayerEvents {
   #animations = new Map<string, Animation>()
   #currentAnim: string | null = null
   #index = 0

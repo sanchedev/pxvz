@@ -1,8 +1,10 @@
 import { getTexture, type Texture } from '../assets/texture.js'
 import { Vector2 } from '../math/vector2.js'
 import { Signal } from '../reactivity/signal.js'
-import { Node, type NodeOptions } from './node.js'
+import { Node, type NodeEvents, type NodeOptions } from './node.js'
 import { Nodes } from './registry.js'
+
+export interface SpriteEvents extends NodeEvents {}
 
 export interface SpriteOptions extends NodeOptions {
   /**
@@ -44,7 +46,9 @@ export interface SpriteOptions extends NodeOptions {
    */
   margin?: Vector2 | Signal<Vector2>
   /**
-   * The **`size`** property of `Sprite` represents the sprite's size.
+   * The **`sourceSize`** property of `Sprite` represents the sprite source size.
+   *
+   * @default texture.size
    *
    * @example
    * ```jsx
@@ -56,13 +60,36 @@ export interface SpriteOptions extends NodeOptions {
    *     <sprite
    *       textureId='idle'
    *       margin={new Vector(16, 0)}
-   *       size={new Vector(16, 16)}
+   *       sourceSize={new Vector(16, 16)}
    *     />
    *   )
    * }
    * ```
    */
-  size?: Vector2 | Signal<Vector2>
+  sourceSize?: Vector2 | Signal<Vector2>
+  /**
+   * The **`displaySize`** property of `Sprite` represents the sprite display size.
+   *
+   * @default this.sourceSize
+   *
+   * @example
+   * ```jsx
+   *
+   * await loadTexture('idle', 'assets/idle.png')
+   *
+   * function Player() {
+   *   return (
+   *     <sprite
+   *       textureId='idle'
+   *       margin={new Vector(16, 0)}
+   *       sourceSize={new Vector(16, 16)}
+   *       displaySize={new Vector(32, 32)}
+   *     />
+   *   )
+   * }
+   * ```
+   */
+  displaySize?: Vector2 | Signal<Vector2>
   flipX?: boolean | Signal<boolean>
   flipY?: boolean | Signal<boolean>
 }
@@ -70,75 +97,16 @@ export interface SpriteOptions extends NodeOptions {
 /** Default **`id`** for `Sprite` and it is used for jsx tags */
 export const spriteNodeName = 'sprite'
 
-export class Sprite extends Node {
+export class Sprite extends Node implements SpriteEvents {
   #textureId?: string | undefined
   #texture?: Texture | undefined
-  /**
-   * The **`margin`** property of `Sprite` represents the sprite's texture offset.
-   *
-   * @example
-   * ```jsx
-   *
-   * await loadTexture('idle', 'assets/idle.png')
-   *
-   * function Ball() {
-   *   useStart((node) => {
-   *     const container = node.getChild('container')
-   *     // ...
-   *   })
-   *
-   *   return (
-   *     <sprite textureId='idle' margin={new Vector(16, 0)} />
-   *   )
-   * }
-   * ```
-   */
   margin?: Vector2 | undefined
-  /**
-   * The **`size`** property of `Sprite` represents the sprite's size.
-   *
-   * @example
-   * ```jsx
-   *
-   * await loadTexture('idle', 'assets/idle.png')
-   *
-   * function Player() {
-   *   return (
-   *     <sprite
-   *       textureId='idle'
-   *       margin={new Vector(16, 0)}
-   *       size={new Vector(16, 16)}
-   *     />
-   *   )
-   * }
-   * ```
-   */
-  size?: Vector2 | undefined
+  sourceSize?: Vector2 | undefined
+  displaySize?: Vector2 | undefined
 
   flipX = false
   flipY = false
 
-  /**
-   * The **`textureId`** property of `Sprite` represents the sprite's texture.
-   * If **`textureId`** is not in the textures loaded then thow an error.
-   *
-   * @example
-   * ```jsx
-   *
-   * await loadTexture('ball', 'assets/ball.png')
-   *
-   * function Ball() {
-   *   useStart((node) => {
-   *     const container = node.getChild('container')
-   *     // ...
-   *   })
-   *
-   *   return (
-   *     <sprite textureId='ball' />
-   *   )
-   * }
-   * ```
-   */
   get textureId() {
     return this.#textureId
   }
@@ -174,12 +142,20 @@ export class Sprite extends Node {
         this.margin = options.margin
       }
     }
-    if (options.size != null) {
-      if (options.size instanceof Signal) {
-        this.size = options.size.value
-        options.size.subscribe((val) => (this.size = val))
+    if (options.sourceSize != null) {
+      if (options.sourceSize instanceof Signal) {
+        this.sourceSize = options.sourceSize.value
+        options.sourceSize.subscribe((val) => (this.sourceSize = val))
       } else {
-        this.size = options.size
+        this.sourceSize = options.sourceSize
+      }
+    }
+    if (options.displaySize != null) {
+      if (options.displaySize instanceof Signal) {
+        this.displaySize = options.displaySize.value
+        options.displaySize.subscribe((val) => (this.displaySize = val))
+      } else {
+        this.displaySize = options.displaySize
       }
     }
     if (options.textureId != null) {
@@ -223,8 +199,8 @@ export class Sprite extends Node {
     this.#texture.draw({
       position: this.position,
       margin: this.margin,
-      size: this.size,
-      resultSize: this.size?.toMultiplied(
+      sourceSize: this.sourceSize,
+      displaySize: this.displaySize?.toMultiplied(
         new Vector2(this.flipX ? -1 : 1, this.flipY ? -1 : 1),
       ),
     })
