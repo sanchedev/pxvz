@@ -1,7 +1,11 @@
 import type { Event } from '../events/event.js'
 import type { NodeRef } from '../hooks/use-node.js'
-import type { Node } from '../nodes/node.js'
-import type { NodeInstances, NodeName, NodesOptions } from '../nodes/types.js'
+import type {
+  NodeEvents,
+  NodeInstances,
+  NodeName,
+  NodesOptions,
+} from '../nodes/types.js'
 
 export namespace Tiny {
   export type Type = keyof JSX.IntrinsicElements | ((props: any) => Node)
@@ -46,22 +50,13 @@ export type IntrinsicElement<T extends NodeName = 'node'> = {
    * ```
    */
   use?: NodeRef<NodeInstances[T]>
-} & RecordOfEvents<NodeInstances[T]> &
-  Tiny.WithChildren<NodesOptions[T]>
-
-// Event
-type RecordOfEvents<T extends Node = Node> = {
-  [P in keyof T as NodeEvent<T, P> extends undefined
-    ? never
-    : EventName<NonNullable<NodeEvent<T, P>>['baseName']>]?: NonNullable<
-    NodeEvent<T, P>
-  >['exampleFun']
-}
-
-type NodeEvent<T extends Node, K extends keyof T> =
-  T[K] extends Event<any[], string> ? T[K] : undefined
-
-type EventName<T extends string> = `on${Capitalize<T>}`
+} & {
+  [P in keyof NodeEvents[T]]?: NonNullable<
+    NodeEvents[T][P] extends Event<infer U, infer V>
+      ? Event<U, V>['exampleFun']
+      : never
+  >
+} & Tiny.WithChildren<NodesOptions[T]>
 
 // JSX Declaration
 declare global {

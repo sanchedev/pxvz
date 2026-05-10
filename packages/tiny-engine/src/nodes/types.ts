@@ -6,6 +6,7 @@ import type {
 } from './animation-player.js'
 import type { Collider, colliderNodeName } from './collider.js'
 import type { RayCast, rayCastNodeName } from './ray-cast.js'
+import type { Event } from '../events/event.js'
 
 export interface NodeClasses {
   [nodeName]: typeof Node
@@ -28,3 +29,19 @@ export type NodeInstances = {
 }
 
 export type NodeToOptions<T extends typeof Node> = ConstructorParameters<T>[0]
+
+export type NodeEvents = {
+  [P in NodeName]: {
+    [Q in keyof NodeInstances[P] as NodeEvent<
+      NodeInstances[P],
+      Q
+    > extends undefined
+      ? never
+      : `on${Capitalize<NonNullable<NodeEvent<NodeInstances[P], Q>>['baseName']>}`]: NonNullable<
+      NodeEvent<NodeInstances[P], Q>
+    >
+  }
+}
+
+type NodeEvent<T extends Node, K extends keyof T> =
+  T[K] extends Event<any[], string> ? T[K] : undefined
